@@ -13,4 +13,6 @@ import javax.swing.JPanel;
  */
 public class ClientJPanel extends JPanel{
     
+    public ClientJPanel() {}
+    
 }
