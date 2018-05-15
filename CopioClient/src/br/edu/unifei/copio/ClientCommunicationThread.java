@@ -22,9 +22,9 @@ public class ClientCommunicationThread implements Runnable {
 
     private Socket socket;
     private BufferedReader reader;
-    private JPanel clienteJ;
+    private ClientJPanel clienteJ;
 
-    ClientCommunicationThread(Socket socket, JPanel clienteJ) {
+    ClientCommunicationThread(Socket socket, ClientJPanel clienteJ) {
         this.socket = socket;
         this.clienteJ = clienteJ;
     }
@@ -36,8 +36,20 @@ public class ClientCommunicationThread implements Runnable {
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream())); //Caso receba uma mensagem do server, imprime na tela
                 String newMsg;
                 while ((newMsg = reader.readLine()) != null) {
-                    if (newMsg.length() != 0) {
-                        System.out.println(newMsg);
+                    if (newMsg != "") {
+                        switch (newMsg.substring(0, 5)) {
+                            case ("-cnt-"):
+                                clienteJ.setNumJogadores(Integer.valueOf(newMsg.substring(5)));
+                                System.out.println(newMsg);
+                                newMsg = "";
+                                clienteJ.repaint();
+                                break;
+                            case ("-dct-"):
+                                clienteJ.setNumJogadores(Integer.valueOf(newMsg.substring(5)));
+                                newMsg = "";
+                                clienteJ.repaint();
+                                break;
+                        }
                     }
                 }
             }

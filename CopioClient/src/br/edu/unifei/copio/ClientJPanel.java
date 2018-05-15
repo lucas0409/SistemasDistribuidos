@@ -21,6 +21,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,6 +44,11 @@ public class ClientJPanel extends JPanel {
     private int x;
     private int y;
     private int size;
+    private int numJogadores;
+
+    public void setNumJogadores(int numJogadores) {
+        this.numJogadores = numJogadores;
+    }
 
     private void removeComponents() {
         this.remove(txt_playerName);
@@ -57,9 +63,6 @@ public class ClientJPanel extends JPanel {
     }
 
     public ClientJPanel() {
-        Thread MsgReceive = new Thread(new ClientCommunicationThread(socket, this));
-        MsgReceive.start();
-
         this.setBackground(Color.red);
         x = y = 0;
         size = 50;
@@ -82,7 +85,7 @@ public class ClientJPanel extends JPanel {
                 x++;
                 y++;
 
-                repaint();
+                //repaint();
             }
         });
         t.start();
@@ -98,6 +101,8 @@ public class ClientJPanel extends JPanel {
             DatagramPacket dgPacket = new DatagramPacket(new byte[MAXSIZE], MAXSIZE); //pacote UDP para receber a mensagem de broadcast do servidor
             dgSocket.receive(dgPacket); //método que coloca o pacote que está no socket criado na porta PORT em dgPacket
             socket = new Socket(dgPacket.getAddress().toString().replace("/", ""), PORT); //criação do socket para conexão com o servidor a partir da mensagem obtida
+            Thread MsgReceive = new Thread(new ClientCommunicationThread(socket, this));
+            MsgReceive.start();
             System.out.println("Conectado em: " + dgPacket.getAddress().toString().replace("/", ""));
             dgSocket.close(); //fecha socket UDP
 
@@ -113,7 +118,12 @@ public class ClientJPanel extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.fillOval(x, y, size, size);
+        Random r = new Random();
+        for (int i = 0; i < numJogadores; i++) {
+            g.setColor(new Color(r.nextInt(255),r.nextInt(255),r.nextInt(255)));
+            g.fillOval(r.nextInt(this.getWidth()-size), r.nextInt(this.getHeight()-size), size, size);
+        }
+
     }
 
 }
