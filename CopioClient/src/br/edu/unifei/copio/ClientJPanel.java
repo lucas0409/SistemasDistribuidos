@@ -56,7 +56,7 @@ public class ClientJPanel extends JPanel{
     }
     
     public ClientJPanel() {
-        this.setBackground(Color.magenta);
+        this.setBackground(Color.red);
         x = y = 0;
         size = 50;
         btn_playGame.addActionListener(new ActionListener() {
