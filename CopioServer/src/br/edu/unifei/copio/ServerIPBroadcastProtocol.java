@@ -3,13 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.edu.unifei.lab02;
+package br.edu.unifei.copio;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,12 +20,8 @@ import java.util.logging.Logger;
 public class ServerIPBroadcastProtocol implements Runnable{
     public static final int MAXSIZE = 1024;
     public static final int PORT = 7000;
-    private final ServerSocket server;
     
-    public ServerIPBroadcastProtocol(ServerSocket server){
-        this.server = server;
-    }
-    
+    public ServerIPBroadcastProtocol(){ }
     @Override
     public void run() {
         try{
@@ -42,5 +37,4 @@ public class ServerIPBroadcastProtocol implements Runnable{
             Logger.getLogger(ServerIPBroadcastProtocol.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
 }

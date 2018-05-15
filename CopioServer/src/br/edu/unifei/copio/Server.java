@@ -3,45 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.edu.unifei.lab02;
+package br.edu.unifei.copio;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
  * @author lucas
  */
-public class Servidor {
-    protected static String nomeCliente;
-    protected static List listaClientes = new ArrayList();
+public class Server {
     private static int conexoes; //número de conexões ao servidor
     public static final int PORT = 7000; //Define a porta como 7000
-    
-    public static boolean Lista_Users(Socket user, String nome){
-       for (int i=0; i < listaClientes.size(); i++){
-         if(listaClientes.get(i).equals(nome))
-           return true;
-       }
-       listaClientes.add(user);
-       listaClientes.add(nome);
-       System.out.println("Adicionou " + user +" "+ nome);
-       return false;
-    }
-
-    public void Remove_Users(String oldUser) {
-       for (int i=0; i< listaClientes.size(); i++){
-         if(listaClientes.get(i).equals(oldUser))
-           listaClientes.remove(oldUser);
-       }
-    }
-    
     public static void main(String[] args) throws IOException {
         ServerSocket server = new ServerSocket(PORT); //cria o servidor na porta PORT definida anteriormente
-        Thread sendIP = new Thread(new ServerIPBroadcastProtocol(server)); //cria Thread que envia IP do servidor por broadcast
+        Thread sendIP = new Thread(new ServerIPBroadcastProtocol()); //cria Thread que envia IP do servidor por broadcast
         sendIP.start(); //inicia Thread de descoberta de servidor
         
         for(;;){
@@ -52,5 +29,4 @@ public class Servidor {
             conexao.start(); //inicia Thread
         }
     }
-    
 }
