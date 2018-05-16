@@ -18,7 +18,7 @@ import java.util.List;
 public class Servidor {
     protected static String nomeCliente;
     protected static List listaClientes = new ArrayList();
-    private static int conexoes; //número de conexões ao servidor
+    protected static int conexoes; //número de conexões ao servidor
     public static final int PORT = 7000; //Define a porta como 7000
     
     public static boolean Lista_Users(Socket user, String nome){
@@ -47,6 +47,7 @@ public class Servidor {
         for(;;){
             Socket cliente = server.accept(); //espera um cliente conectar
             conexoes++; //incrementa o número de clientes que conectaram ao servidor
+            
             System.out.println("Conexões: " + String.valueOf(conexoes)); //mostra o número de clientes que já conectaram
             Thread conexao = new Thread(new ConnectionProtocol(cliente)); //joga cliente para uma Thread separada para tratar a conexão
             conexao.start(); //inicia Thread

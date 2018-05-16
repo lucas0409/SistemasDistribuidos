@@ -6,6 +6,7 @@
 package br.edu.unifei.copio;
 
 import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,16 +44,25 @@ public class ConnectionProtocol implements Runnable{
             
             if (Servidor.Lista_Users(s, Servidor.nomeCliente)){
                 saida.println("Não foi possível conectar! Nome ja existente");
+                Servidor.conexoes--;
                 this.s.close();
                 return;
             } else {
                 System.out.println(Servidor.nomeCliente + " conectou-se!");
-                System.out.println(Servidor.listaClientes.get(0).toString());
-                System.out.println(Servidor.listaClientes.get(1).toString());
+                for (int i = 0; i < Servidor.listaClientes.size(); i = i+2) {
+                    Socket sock = (Socket) Servidor.listaClientes.get(i);
+                    PrintStream socket_out = new PrintStream(sock.getOutputStream());
+                    socket_out.println("-cnt-" + Servidor.conexoes);
+                }
             }
             
-        } catch (IOException ex) {
-            Logger.getLogger(ConnectionProtocol.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex ) {
+            if (ex instanceof EOFException) {
+                    System.out.println("User " + Servidor.nomeCliente + " disconnected!");
+                } else {
+                    Logger.getLogger(ConnectionProtocol.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
         }
     }
-}
