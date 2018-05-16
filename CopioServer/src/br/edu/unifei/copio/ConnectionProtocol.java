@@ -21,10 +21,11 @@ import java.util.logging.Logger;
  *
  * @author lucas
  */
-public class ConnectionProtocol implements Runnable{
+public class ConnectionProtocol implements Runnable {
+
     private Socket s;
-    
-    public ConnectionProtocol(Socket s){
+
+    public ConnectionProtocol(Socket s) {
         this.s = s;
     }
 
@@ -32,10 +33,10 @@ public class ConnectionProtocol implements Runnable{
     public void run() {
         int recvMsgSize;  // Size of receive message
         byte[] byteBuffer = new byte[1024];  // Receive buffer
-        
-        System.out.println ("Handling client at " +
-        s.getInetAddress().getHostAddress() + " on port " +
-          s.getPort());
+
+        System.out.println("Handling client at "
+                + s.getInetAddress().getHostAddress() + " on port "
+                + s.getPort());
 
         try {
             BufferedReader entrada = new BufferedReader(new InputStreamReader(this.s.getInputStream()));
@@ -63,6 +64,5 @@ public class ConnectionProtocol implements Runnable{
                     Logger.getLogger(ConnectionProtocol.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            
         }
     }
