@@ -2,10 +2,14 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+<<<<<<< HEAD
+        <group/>
+=======
         <group>
             <file>file:/C:/Users/Gianetti/Desktop/Jogos/Bruno_GIt/CopioClient/src/br/edu/unifei/copio/Client.java</file>
             <file>file:/C:/Users/Gianetti/Desktop/Jogos/Bruno_GIt/CopioClient/src/br/edu/unifei/copio/ClientCommunicationThread.java</file>
             <file>file:/C:/Users/Gianetti/Desktop/Jogos/Bruno_GIt/CopioClient/src/br/edu/unifei/copio/ClientJPanel.java</file>
         </group>
+>>>>>>> 81e2c5ab3a8f7d47c0e0f333b478d71d1b629b2e
     </open-files>
 </project-private>
