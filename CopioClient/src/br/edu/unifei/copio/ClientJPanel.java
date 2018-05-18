@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Random;
@@ -97,14 +98,24 @@ public class ClientJPanel extends JPanel {
 
     private void connect(String msg) {
         try {
-            DatagramSocket dgSocket = new DatagramSocket(PORT); //Socket UDP para ler pacotes UDP na porta PORT
-            DatagramPacket dgPacket = new DatagramPacket(new byte[MAXSIZE], MAXSIZE); //pacote UDP para receber a mensagem de broadcast do servidor
-            dgSocket.receive(dgPacket); //método que coloca o pacote que está no socket criado na porta PORT em dgPacket
-            socket = new Socket(dgPacket.getAddress().toString().replace("/", ""), PORT); //criação do socket para conexão com o servidor a partir da mensagem obtida
+            String requestTest = "-rqt-";
+            DatagramSocket dgSocket = new DatagramSocket(PORT);
+
+            DatagramPacket dgSendPacket = new DatagramPacket(requestTest.getBytes(), requestTest.getBytes().length, InetAddress.getByName("255.255.255.255"), PORT);
+            DatagramPacket dgReceivePacket = new DatagramPacket(new byte[MAXSIZE], MAXSIZE); //pacote UDP para receber a mensagem de broadcast do servidor
+            dgSocket.setBroadcast(true);
+            dgSocket.send(dgSendPacket);  //Cliente grita em broadcast por Datagrama com ip do servidor
+            dgSocket.close();
+
+            dgSocket = new DatagramSocket(PORT);
+            dgSocket.setBroadcast(true);
+            dgSocket.receive(dgReceivePacket); //método que coloca o pacote que está no socket criado na porta PORT em dgReceivePacket
+
+            socket = new Socket(dgReceivePacket.getAddress().toString().replace("/", ""), PORT); //criação do socket para conexão com o servidor a partir da mensagem obtida
             Thread MsgReceive = new Thread(new ClientCommunicationThread(socket, this));
             MsgReceive.start();
-            System.out.println("Conectado em: " + dgPacket.getAddress().toString().replace("/", ""));
-            dgSocket.close(); //fecha socket UDP
+            System.out.println("Conectado em: " + dgReceivePacket.getAddress().toString().replace("/", ""));
+            dgSocket.close(); //fecha socket UDP*/
 
             PrintStream writer = new PrintStream(socket.getOutputStream());
             writer.println(msg);
@@ -120,8 +131,8 @@ public class ClientJPanel extends JPanel {
         super.paintComponent(g);
         Random r = new Random();
         for (int i = 0; i < numJogadores; i++) {
-            g.setColor(new Color(r.nextInt(255),r.nextInt(255),r.nextInt(255)));
-            g.fillOval(r.nextInt(this.getWidth()-size), r.nextInt(this.getHeight()-size), size, size);
+            g.setColor(new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255)));
+            g.fillOval(r.nextInt(this.getWidth() - size), r.nextInt(this.getHeight() - size), size, size);
         }
 
     }
