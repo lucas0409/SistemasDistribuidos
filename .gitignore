@@ -1,2 +1,16 @@
 /CopioServer/build/
 /CopioClient/build/
+
+/CopioServer/nbproject/private/
+/CopioServer/build/
+/CopioServer/nbbuild/
+/CopioServer/dist/
+/CopioServer/nbdist/
+/CopioServer/.nb-gradle/
+
+/CopioClient/nbproject/private/
+/CopioClient/build/
+/CopioClient/nbbuild/
+/CopioClient/dist/
+/CopioClient/nbdist/
+/CopioClient/.nb-gradle/
