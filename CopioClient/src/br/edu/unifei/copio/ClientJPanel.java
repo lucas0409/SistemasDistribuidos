@@ -20,8 +20,11 @@ import java.io.PrintStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -42,6 +45,7 @@ public class ClientJPanel extends JPanel {
     JButton btn_playGame = new JButton("Jogar!");
     JFrame frame;
     Socket socket;
+    private InetAddress broadcastAddress;
     private int x;
     private int y;
     private int size;
@@ -96,12 +100,30 @@ public class ClientJPanel extends JPanel {
 
     }
 
+    public static InetAddress getBroadcastAddress() {
+	try {
+		Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+		while (interfaces.hasMoreElements()) {
+			NetworkInterface networkInterface = interfaces.nextElement();
+			if (networkInterface.isLoopback()) continue;
+			for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+				InetAddress broadcast = interfaceAddress.getBroadcast();
+				if (broadcast != null) return broadcast;
+			}
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return null;
+}
+    
     private void connect(String msg) {
         try {
             String requestTest = "-rqt-";
             DatagramSocket dgSocket = new DatagramSocket(PORT);
+            broadcastAddress = getBroadcastAddress();
 
-            DatagramPacket dgSendPacket = new DatagramPacket(requestTest.getBytes(), requestTest.getBytes().length, InetAddress.getByName("255.255.255.255"), PORT);
+            DatagramPacket dgSendPacket = new DatagramPacket(requestTest.getBytes(), requestTest.getBytes().length, broadcastAddress, PORT);
             DatagramPacket dgReceivePacket = new DatagramPacket(new byte[MAXSIZE], MAXSIZE); //pacote UDP para receber a mensagem de broadcast do servidor
             dgSocket.setBroadcast(true);
             dgSocket.send(dgSendPacket);  //Cliente grita em broadcast por Datagrama com ip do servidor
