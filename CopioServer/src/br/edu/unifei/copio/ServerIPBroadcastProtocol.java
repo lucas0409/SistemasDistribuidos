@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.SocketException;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,7 +26,8 @@ public class ServerIPBroadcastProtocol implements Runnable {
     public static final int MAXSIZE = 1024;
     public static final int PORT = 7000;
     private final ServerSocket server;
-
+    private InetAddress broadcastAddress;
+    
     public ServerIPBroadcastProtocol(ServerSocket server) {
         this.server = server;
     }
@@ -33,8 +37,9 @@ public class ServerIPBroadcastProtocol implements Runnable {
         try {
             DatagramSocket dgSocket = new DatagramSocket(PORT); //Socket UDP para ler pacotes UDP na porta PORT
             dgSocket.setBroadcast(true);
+            broadcastAddress = getBroadcastAddress();
             DatagramPacket dgReceivePacket = new DatagramPacket(new byte[MAXSIZE], MAXSIZE);
-            DatagramPacket dgSendPacket = new DatagramPacket(InetAddress.getLocalHost().getAddress(), InetAddress.getLocalHost().getAddress().length, InetAddress.getByName("255.255.255.255"), PORT);
+            DatagramPacket dgSendPacket = new DatagramPacket(InetAddress.getLocalHost().getAddress(), InetAddress.getLocalHost().getAddress().length, broadcastAddress, PORT);
             for (;;) {
                 dgReceivePacket = new DatagramPacket(new byte[MAXSIZE], MAXSIZE);
                 dgSocket.receive(dgReceivePacket); //método que coloca o pacote que está no socket criado na porta PORT em dgPacket            
@@ -50,6 +55,23 @@ public class ServerIPBroadcastProtocol implements Runnable {
         } catch (IOException ex) {
             Logger.getLogger(ServerIPBroadcastProtocol.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public static InetAddress getBroadcastAddress() {
+	try {
+		Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+		while (interfaces.hasMoreElements()) {
+			NetworkInterface networkInterface = interfaces.nextElement();
+			if (networkInterface.isLoopback()) continue;
+			for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+				InetAddress broadcast = interfaceAddress.getBroadcast();
+				if (broadcast != null) return broadcast;
+			}
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+	return null;
     }
 
 }
