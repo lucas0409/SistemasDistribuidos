@@ -71,8 +71,9 @@ public class ClientJPanel extends JPanel {
         this();
         this.frame = frame;
         food = new FoodSphereInterface[20];
-        for (int i = 0; i < 10; i++) {
-            food[i] = (FoodSphereInterface) Naming.lookup("rmi://localhost:1090/Calculator");
+        for (int i = 0; i < 20; i++) {
+            food[i] = (FoodSphereInterface) Naming.lookup("rmi://localhost:1090/FoodSphere" + (i+1));
+            food[i].eatThis();
         }
     }
 
