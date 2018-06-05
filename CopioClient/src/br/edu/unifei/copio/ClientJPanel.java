@@ -21,9 +21,13 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
+import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.Scanner;
@@ -50,6 +54,7 @@ public class ClientJPanel extends JPanel {
     private int y;
     private int size;
     private int numJogadores;
+    private FoodSphereInterface[] food;
 
     public void setNumJogadores(int numJogadores) {
         this.numJogadores = numJogadores;
@@ -62,9 +67,13 @@ public class ClientJPanel extends JPanel {
         this.setSize(800, 600);
     }
 
-    public ClientJPanel(JFrame frame) {
+    public ClientJPanel(JFrame frame) throws NotBoundException, MalformedURLException, RemoteException {
         this();
         this.frame = frame;
+        food = new FoodSphereInterface[20];
+        for (int i = 0; i < 10; i++) {
+            food[i] = (FoodSphereInterface) Naming.lookup("rmi://localhost:1090/Calculator");
+        }
     }
 
     public ClientJPanel() {
@@ -115,7 +124,7 @@ public class ClientJPanel extends JPanel {
 		e.printStackTrace();
 	}
 	return null;
-}
+    }
     
     private void connect(String msg) {
         try {
