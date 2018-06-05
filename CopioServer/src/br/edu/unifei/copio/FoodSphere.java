@@ -35,8 +35,9 @@ public class FoodSphere extends UnicastRemoteObject implements FoodSphereInterfa
     }
     
     public FoodSphere() throws RemoteException{
+        position = new Point();
         position.x = (new Random()).nextInt(800 - margin) + margin;
         position.y = (new Random()).nextInt(600 - margin) + margin;
-        mass = (new Random()).nextInt(4) + 1;
+        mass = (new Random()).nextInt(15) + 5;
     }    
 }

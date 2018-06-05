@@ -79,7 +79,7 @@ public class ClientJPanel extends JPanel {
     }
 
     public ClientJPanel() {
-        this.setBackground(Color.white);
+        this.setBackground(Color.black);
         x = y = 0;
         size = 25;
         btn_playGame.addActionListener(new ActionListener() {
@@ -171,9 +171,8 @@ public class ClientJPanel extends JPanel {
         for (FoodSphereInterface foodSphereInterface : food) {
             try{
                 p = foodSphereInterface.getPosition();
-                g.setColor(Color.black);
+                g.setColor(Color.white);
                 g.fillOval(p.x, p.y, foodSphereInterface.getMass(), foodSphereInterface.getMass());
-                System.out.println("PONTO: " + p + " MASSA: " + foodSphereInterface.getMass());
             }catch(Exception e){ }
         }
 
