@@ -9,6 +9,7 @@ import static br.edu.unifei.copio.Client.MAXSIZE;
 import static br.edu.unifei.copio.Client.PORT;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -73,15 +74,14 @@ public class ClientJPanel extends JPanel {
         food = new FoodSphereInterface[20];
         
         for (int i = 0; i < 20; i++) {
-            food[i] = (FoodSphereInterface) Naming.lookup("rmi://192.168.0.10:1090/FoodSphere" + (i+1));
-            food[i].eatThis();
+            food[i] = (FoodSphereInterface) Naming.lookup("rmi://192.168.0.9:1090/FoodSphere" + (i+1));
         }
     }
 
     public ClientJPanel() {
-        this.setBackground(Color.red);
+        this.setBackground(Color.white);
         x = y = 0;
-        size = 50;
+        size = 25;
         btn_playGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -95,13 +95,13 @@ public class ClientJPanel extends JPanel {
                 removeComponents();
             }
         });
-        Timer t = new Timer(100, new ActionListener() {
+        Timer t = new Timer(300, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 x++;
                 y++;
 
-                //repaint();
+                repaint();
             }
         });
         t.start();
@@ -166,6 +166,15 @@ public class ClientJPanel extends JPanel {
         for (int i = 0; i < numJogadores; i++) {
             g.setColor(new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255)));
             g.fillOval(r.nextInt(this.getWidth() - size), r.nextInt(this.getHeight() - size), size, size);
+        }
+        Point p = new Point();
+        for (FoodSphereInterface foodSphereInterface : food) {
+            try{
+                p = foodSphereInterface.getPosition();
+                g.setColor(Color.black);
+                g.fillOval(p.x, p.y, foodSphereInterface.getMass(), foodSphereInterface.getMass());
+                System.out.println("PONTO: " + p + " MASSA: " + foodSphereInterface.getMass());
+            }catch(Exception e){ }
         }
 
     }
