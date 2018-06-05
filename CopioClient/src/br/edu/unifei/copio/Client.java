@@ -6,6 +6,9 @@
 package br.edu.unifei.copio;
 
 
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import javax.swing.JFrame;
 
 /**
@@ -16,7 +19,7 @@ public class Client {
     public static final int MAXSIZE = 1024;
     public static final int PORT = 7000;
     
-    public static void main(String[] args){
+    public static void main(String[] args) throws NotBoundException, MalformedURLException, RemoteException{
         JFrame frame = new JFrame("Cop.io");
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         frame.add(new ClientJPanel(frame));
