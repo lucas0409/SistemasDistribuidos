@@ -75,7 +75,6 @@ public class ClientJPanel extends JPanel {
         for (int i = 0; i < 20; i++) {
             food[i] = (FoodSphereInterface) Naming.lookup("rmi://192.168.0.10:1090/FoodSphere" + (i+1));
             food[i].eatThis();
-            System.out.println("Chamou");
         }
     }
 
