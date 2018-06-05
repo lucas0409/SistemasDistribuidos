@@ -7,6 +7,7 @@ package br.edu.unifei.copio;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import javax.swing.JOptionPane;
 
 /**
  *
