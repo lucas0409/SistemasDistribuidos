@@ -84,7 +84,7 @@ public class ClientJPanel extends JPanel {
         for (int i = 0; i < 20; i++) {
             food[i] = (FoodSphereInterface) Naming.lookup("rmi://192.168.0.9:1090/FoodSphere" + (i + 1));
         }
-        player = (RemoteClientInterface) Naming.lookup("remi://192.168.0.9:1090/" + playerName);
+        player = (RemoteClientInterface) Naming.lookup("rmi://192.168.0.9:1090/" + playerName);
     }
 
     public ClientJPanel() {

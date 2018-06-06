@@ -5,6 +5,7 @@
  */
 package br.edu.unifei.copio;
 
+import static br.edu.unifei.copio.Servidor.gameRegistry;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
@@ -44,7 +45,12 @@ public class ConnectionProtocol implements Runnable {
             BufferedReader entrada = new BufferedReader(new InputStreamReader(this.s.getInputStream()));
             PrintStream saida = new PrintStream(this.s.getOutputStream());
             Servidor.nomeCliente = entrada.readLine();
+            
             Servidor.gameRegistry.rebind(Servidor.nomeCliente, new RemoteClient());
+            PrintStream socket_out = new PrintStream(s.getOutputStream());
+            socket_out.println("-rmt-");
+            
+            System.out.println(Servidor.nomeCliente);
             if (Servidor.Lista_Users(s, Servidor.nomeCliente)){
                 saida.println("Não foi possível conectar! Nome ja existente");
                 Servidor.conexoes--;
@@ -54,7 +60,7 @@ public class ConnectionProtocol implements Runnable {
                 System.out.println(Servidor.nomeCliente + " conectou-se!");
                 for (int i = 0; i < Servidor.listaClientes.size(); i = i+2) {
                     Socket sock = (Socket) Servidor.listaClientes.get(i);
-                    PrintStream socket_out = new PrintStream(sock.getOutputStream());
+                    socket_out = new PrintStream(sock.getOutputStream());
                     socket_out.println("-cnt-" + Servidor.conexoes);
                 }
             }

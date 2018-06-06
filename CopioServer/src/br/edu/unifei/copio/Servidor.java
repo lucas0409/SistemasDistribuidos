@@ -52,7 +52,6 @@ public class Servidor {
         sendIP.start(); //inicia Thread de descoberta de servidor
 
         gameRegistry = java.rmi.registry.LocateRegistry.createRegistry(1090);
-
         for (int i = 1; i <= 20; i++) {
             gameRegistry.rebind("FoodSphere" + i, new FoodSphere());
         }
@@ -62,7 +61,7 @@ public class Servidor {
             conexoes++; //incrementa o número de clientes que conectaram ao servidor
             System.out.println("Conexões: " + String.valueOf(conexoes)); //mostra o número de clientes que já conectaram
             Thread conexao = new Thread(new ConnectionProtocol(cliente)); //joga cliente para uma Thread separada para tratar a conexão
-            conexao.start(); //inicia Thread
+            conexao.start(); //inicia Thread            
         }
     }
 
