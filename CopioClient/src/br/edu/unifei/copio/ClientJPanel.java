@@ -44,16 +44,18 @@ import javax.swing.Timer;
  */
 public class ClientJPanel extends JPanel {
 
+    private String playerName;
     JTextField txt_playerName = new JTextField(10);
     JButton btn_playGame = new JButton("Jogar!");
     JFrame frame;
     Socket socket;
     private InetAddress broadcastAddress;
-    private float x;
-    private float y;
+    private Point playerPosition;
     private int size;
     private int numJogadores;
     private FoodSphereInterface[] food;
+    private RemoteClientInterface player;
+    private RemoteClientInterface[] playerList;
     private boolean gameStarted;
 
     public void setNumJogadores(int numJogadores) {
@@ -67,7 +69,7 @@ public class ClientJPanel extends JPanel {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setSize(screenSize.width, screenSize.height);
         //frame.setSize(1000,800);
-        frame.setLocation(0,0);
+        frame.setLocation(0, 0);
         frame.setBackground(Color.MAGENTA);
         this.setSize(1000, 800);
         gameStarted = true;
@@ -80,52 +82,56 @@ public class ClientJPanel extends JPanel {
         food = new FoodSphereInterface[20];
 
         for (int i = 0; i < 20; i++) {
-
-        food[i] = (FoodSphereInterface) Naming.lookup("rmi://192.168.0.9:1090/FoodSphere" + (i + 1));
-
+            food[i] = (FoodSphereInterface) Naming.lookup("rmi://192.168.0.9:1090/FoodSphere" + (i + 1));
         }
+        player = (RemoteClientInterface) Naming.lookup("remi://192.168.0.9:1090/" + playerName);
     }
 
     public ClientJPanel() {
+
         this.setBackground(Color.black);
-        x = y = 0;
-      
+        playerPosition = new Point();
+        playerPosition.x = playerPosition.y = 0;
+
         size = 100;
 
         btn_playGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String msg;
                 if (txt_playerName.getText() != null) {
-                    msg = txt_playerName.getText();
+                    playerName = txt_playerName.getText();
                 } else {
-                    msg = "Convidado";
+                    playerName = "Convidado";
                 }
-                connect(msg);
+                connect(playerName);
                 removeComponents();
             }
         });
 
         Timer t;
         t = new Timer(10, new ActionListener() {
-            Point p  = new Point();
+            Point p = new Point();
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+
                 p = MouseInfo.getPointerInfo().getLocation();
                 System.out.println("P = " + p);
-                
-                float dx = (p.x - x);
-                float dy = (p.y - y);
-                float d = (float) Math.sqrt((dx*dx)+(dy*dy));
-                
-                float Vx = (3/d)*dx;
-                float Vy = (3/d)*dy;
-                
-                
-                x += Vx;
-                y += Vy;
-              
+
+                float dx = (p.x - playerPosition.x);
+                float dy = (p.y - playerPosition.y);
+                float d = (float) Math.sqrt((dx * dx) + (dy * dy));
+
+                float Vx = (3 / d) * dx;
+                float Vy = (3 / d) * dy;
+
+                playerPosition.x += Vx;
+                playerPosition.y += Vy;
+                try {
+                    player.setPosition(playerPosition);
+                } catch (RemoteException ex) {
+                    Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 repaint();
             }
         });
@@ -193,12 +199,10 @@ public class ClientJPanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Random r = new Random();
-        
-        for (int i = 0; i < numJogadores; i++) {
-            g.setColor(Color.WHITE);
-            g.fillOval((int) x-(size/2), (int) y-(size/2), size, size);
-        
-        }
+
+        g.setColor(Color.WHITE);
+        g.fillOval((int) playerPosition.x - (size / 2), (int) playerPosition.y - (size / 2), size, size);
+
         Point p = new Point();
         if (gameStarted) {
             for (FoodSphereInterface foodSphereInterface : food) {
@@ -211,6 +215,5 @@ public class ClientJPanel extends JPanel {
             }
         }
     }
-    
 
 }

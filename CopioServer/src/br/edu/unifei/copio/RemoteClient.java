@@ -52,9 +52,8 @@ public class RemoteClient extends UnicastRemoteObject implements RemoteClientInt
     }
 
     @Override
-    public void setPosition(int x, int y) throws RemoteException {
-        position.x = x;
-        position.y = y;
+    public void setPosition(Point position) throws RemoteException {
+        this.position = position;
     }
 
     @Override

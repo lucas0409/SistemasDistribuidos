@@ -44,7 +44,7 @@ public class ConnectionProtocol implements Runnable {
             BufferedReader entrada = new BufferedReader(new InputStreamReader(this.s.getInputStream()));
             PrintStream saida = new PrintStream(this.s.getOutputStream());
             Servidor.nomeCliente = entrada.readLine();
-            
+            Servidor.gameRegistry.rebind(Servidor.nomeCliente, new RemoteClient());
             if (Servidor.Lista_Users(s, Servidor.nomeCliente)){
                 saida.println("Não foi possível conectar! Nome ja existente");
                 Servidor.conexoes--;

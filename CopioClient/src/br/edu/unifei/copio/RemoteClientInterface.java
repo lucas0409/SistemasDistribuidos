@@ -13,5 +13,5 @@ public interface RemoteClientInterface extends Remote {
     public Point getPosition() throws RemoteException;
     public int getMass() throws RemoteException;
     public void setMass() throws RemoteException;
-    public void setPosition() throws RemoteException;
+    public void setPosition(Point position) throws RemoteException;
 }
