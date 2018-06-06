@@ -7,6 +7,8 @@
 /CopioServer/dist/
 /CopioServer/nbdist/
 /CopioServer/.nb-gradle/
+/CopioServer/.xml/
+/CopioServer/.mf/
 
 /CopioClient/nbproject/private/
 /CopioClient/build/
@@ -14,3 +16,5 @@
 /CopioClient/dist/
 /CopioClient/nbdist/
 /CopioClient/.nb-gradle/
+/CopioClient/.xml/
+/CopioClient/.mf/
