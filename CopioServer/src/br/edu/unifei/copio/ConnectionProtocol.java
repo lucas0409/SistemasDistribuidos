@@ -24,9 +24,11 @@ import java.util.logging.Logger;
 public class ConnectionProtocol implements Runnable {
 
     private Socket s;
+    private int clientId;
 
     public ConnectionProtocol(Socket s) {
         this.s = s;
+        
     }
 
     @Override
