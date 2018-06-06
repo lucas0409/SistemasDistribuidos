@@ -8,14 +8,14 @@ package br.edu.unifei.copio;
 import static br.edu.unifei.copio.Client.MAXSIZE;
 import static br.edu.unifei.copio.Client.PORT;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -30,7 +30,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Enumeration;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
@@ -50,8 +49,8 @@ public class ClientJPanel extends JPanel {
     JFrame frame;
     Socket socket;
     private InetAddress broadcastAddress;
-    private int x;
-    private int y;
+    private float x;
+    private float y;
     private int size;
     private int numJogadores;
     private FoodSphereInterface[] food;
@@ -63,8 +62,13 @@ public class ClientJPanel extends JPanel {
     private void removeComponents() {
         this.remove(txt_playerName);
         this.remove(btn_playGame);
-        frame.setSize(800, 600);
-        this.setSize(800, 600);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setSize(screenSize.width, screenSize.height);
+        //frame.setSize(1000,800);
+        frame.setLocation(0,0);
+        frame.setBackground(Color.MAGENTA);
+        this.setSize(1000, 800);
+        
     }
 
     public ClientJPanel(JFrame frame) throws NotBoundException, MalformedURLException, RemoteException {
@@ -73,7 +77,7 @@ public class ClientJPanel extends JPanel {
         food = new FoodSphereInterface[20];
         
         for (int i = 0; i < 20; i++) {
-            food[i] = (FoodSphereInterface) Naming.lookup("rmi://192.168.0.10:1090/FoodSphere" + (i+1));
+            food[i] = (FoodSphereInterface) Naming.lookup("rmi://192.168.0.9:1090/FoodSphere" + (i+1));
             food[i].eatThis();
         }
     }
@@ -81,7 +85,7 @@ public class ClientJPanel extends JPanel {
     public ClientJPanel() {
         this.setBackground(Color.red);
         x = y = 0;
-        size = 50;
+        size = 100;
         btn_playGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -95,13 +99,27 @@ public class ClientJPanel extends JPanel {
                 removeComponents();
             }
         });
-        Timer t = new Timer(100, new ActionListener() {
+        Timer t;
+        t = new Timer(10, new ActionListener() {
+            Point p  = new Point();
             @Override
             public void actionPerformed(ActionEvent e) {
-                x++;
-                y++;
-
-                //repaint();
+                
+                p = MouseInfo.getPointerInfo().getLocation();
+                System.out.println("P = " + p);
+                
+                float dx = (p.x - x);
+                float dy = (p.y - y);
+                float d = (float) Math.sqrt((dx*dx)+(dy*dy));
+                
+                float Vx = (3/d)*dx;
+                float Vy = (3/d)*dy;
+                
+                
+                x += Vx;
+                y += Vy;
+              
+                repaint();
             }
         });
         t.start();
@@ -160,14 +178,19 @@ public class ClientJPanel extends JPanel {
         }
     }
 
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Random r = new Random();
+        
         for (int i = 0; i < numJogadores; i++) {
-            g.setColor(new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255)));
-            g.fillOval(r.nextInt(this.getWidth() - size), r.nextInt(this.getHeight() - size), size, size);
+            
+            g.setColor(Color.WHITE);
+            g.fillOval((int) x-(size/2), (int) y-(size/2), size, size);
+        
         }
 
     }
+    
 
 }
