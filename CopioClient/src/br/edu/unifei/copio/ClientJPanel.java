@@ -57,6 +57,7 @@ public class ClientJPanel extends JPanel {
     private boolean gameStarted;
     private Point[] foodPosition;
     private int[] foodMass;
+    private String serverIP;
 
     public void setNumJogadores(int numJogadores) {
         this.numJogadores = numJogadores;
@@ -82,12 +83,6 @@ public class ClientJPanel extends JPanel {
         food = new FoodSphereInterface[20];
         foodPosition = new Point[20];
         foodMass = new int[20];
-
-        for (int i = 0; i < 20; i++) {
-            food[i] = (FoodSphereInterface) Naming.lookup("rmi://192.168.0.9:1090/FoodSphere" + (i + 1));
-            foodPosition[i] = food[i].getPosition();
-            foodMass[i] = food[i].getMass();
-        }
     }
 
     public ClientJPanel() {
@@ -106,6 +101,15 @@ public class ClientJPanel extends JPanel {
                     msg = "Convidado";
                 }
                 connect(msg);
+                for (int i = 0; i < 20; i++) {
+                    try {
+                        food[i] = (FoodSphereInterface) Naming.lookup("rmi://" + serverIP + ":1090" +"/FoodSphere" + (i + 1));
+                        foodPosition[i] = food[i].getPosition();
+                        foodMass[i] = food[i].getMass();
+                    } catch (NotBoundException | MalformedURLException | RemoteException ex) {
+                        Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
                 removeComponents();
             }
         });
@@ -175,7 +179,8 @@ public class ClientJPanel extends JPanel {
             dgSocket.setBroadcast(true);
             dgSocket.receive(dgReceivePacket); //método que coloca o pacote que está no socket criado na porta PORT em dgReceivePacket
 
-            socket = new Socket(dgReceivePacket.getAddress().toString().replace("/", ""), PORT); //criação do socket para conexão com o servidor a partir da mensagem obtida
+            serverIP = dgReceivePacket.getAddress().toString().replace("/", "");
+            socket = new Socket(serverIP, PORT); //criação do socket para conexão com o servidor a partir da mensagem obtida
             Thread MsgReceive = new Thread(new ClientCommunicationThread(socket, this));
             MsgReceive.start();
             System.out.println("Conectado em: " + dgReceivePacket.getAddress().toString().replace("/", ""));
