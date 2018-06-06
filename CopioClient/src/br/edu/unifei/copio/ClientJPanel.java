@@ -93,7 +93,7 @@ public class ClientJPanel extends JPanel {
     public ClientJPanel() {
         this.setBackground(Color.black);
         x = y = 0;
-      
+        
         size = 100;
 
         btn_playGame.addActionListener(new ActionListener() {
@@ -117,7 +117,6 @@ public class ClientJPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 
                 p = MouseInfo.getPointerInfo().getLocation();
-                System.out.println("P = " + p);
                 
                 float dx = (p.x - x);
                 float dy = (p.y - y);
@@ -125,7 +124,6 @@ public class ClientJPanel extends JPanel {
                 
                 float Vx = (3/d)*dx;
                 float Vy = (3/d)*dy;
-                
                 
                 x += Vx;
                 y += Vy;
@@ -200,8 +198,7 @@ public class ClientJPanel extends JPanel {
         
         for (int i = 0; i < numJogadores; i++) {
             g.setColor(Color.WHITE);
-            g.fillOval((int) x-(size/2), (int) y-(size/2), size, size);
-        
+            g.fillOval((int) (x-(size/2.0)), (int) (y-(size/2.0)), size, size);
         }
 
         if (gameStarted) {
