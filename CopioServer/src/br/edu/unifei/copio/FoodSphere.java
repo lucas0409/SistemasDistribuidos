@@ -19,6 +19,8 @@ public class FoodSphere extends UnicastRemoteObject implements FoodSphereInterfa
     private final int margin = 10;
     private Point position;
     private int mass;
+    private final int screenWidth = 1280;
+    private final int screenHeight = 720;
             
     @Override
     public void eatThis() throws RemoteException {
@@ -36,8 +38,8 @@ public class FoodSphere extends UnicastRemoteObject implements FoodSphereInterfa
     
     public FoodSphere() throws RemoteException{
         position = new Point();
-        position.x = (new Random()).nextInt(800 - margin) + margin;
-        position.y = (new Random()).nextInt(600 - margin) + margin;
+        position.x = (new Random()).nextInt(screenWidth - margin) + margin;
+        position.y = (new Random()).nextInt(screenHeight - margin) + margin;
         mass = (new Random()).nextInt(5) + 10;
     }    
 }
