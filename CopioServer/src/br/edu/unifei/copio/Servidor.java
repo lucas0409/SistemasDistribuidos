@@ -8,6 +8,9 @@ package br.edu.unifei.copio;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,14 +42,22 @@ public class Servidor {
        }
     }
     
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, RemoteException, NotBoundException{
         ServerSocket server = new ServerSocket(PORT); //cria o servidor na porta PORT definida anteriormente
         Thread sendIP = new Thread(new ServerIPBroadcastProtocol(server)); //cria Thread que envia IP do servidor por broadcast
         sendIP.start(); //inicia Thread de descoberta de servidor
         
+        Registry gameRegistry = java.rmi.registry.LocateRegistry.createRegistry(1090);
+        
+        for (int i = 1; i <= 20; i++) {
+            gameRegistry.rebind("FoodSphere" + i, new FoodSphere());
+        }
+        
         for(;;){
             Socket cliente = server.accept(); //espera um cliente conectar
             conexoes++; //incrementa o número de clientes que conectaram ao servidor
+            
+            gameRegistry.rebind("Cliente" + conexoes, new RemoteClient());
             
             System.out.println("Conexões: " + String.valueOf(conexoes)); //mostra o número de clientes que já conectaram
             Thread conexao = new Thread(new ConnectionProtocol(cliente)); //joga cliente para uma Thread separada para tratar a conexão

@@ -9,6 +9,7 @@ import static br.edu.unifei.copio.Client.MAXSIZE;
 import static br.edu.unifei.copio.Client.PORT;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -21,9 +22,13 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
+import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.Enumeration;
 import java.util.Random;
 import java.util.Scanner;
@@ -50,6 +55,8 @@ public class ClientJPanel extends JPanel {
     private int y;
     private int size;
     private int numJogadores;
+    private FoodSphereInterface[] food;
+    private boolean gameStarted;
 
     public void setNumJogadores(int numJogadores) {
         this.numJogadores = numJogadores;
@@ -60,17 +67,24 @@ public class ClientJPanel extends JPanel {
         this.remove(btn_playGame);
         frame.setSize(800, 600);
         this.setSize(800, 600);
+        gameStarted = true;
     }
 
-    public ClientJPanel(JFrame frame) {
+    public ClientJPanel(JFrame frame) throws NotBoundException, MalformedURLException, RemoteException {
         this();
+        gameStarted = false;
         this.frame = frame;
+        food = new FoodSphereInterface[20];
+
+        for (int i = 0; i < 20; i++) {
+            food[i] = (FoodSphereInterface) Naming.lookup("rmi://192.168.0.9:1090/FoodSphere" + (i + 1));
+        }
     }
 
     public ClientJPanel() {
-        this.setBackground(Color.red);
+        this.setBackground(Color.black);
         x = y = 0;
-        size = 50;
+        size = 25;
         btn_playGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -84,13 +98,13 @@ public class ClientJPanel extends JPanel {
                 removeComponents();
             }
         });
-        Timer t = new Timer(100, new ActionListener() {
+        Timer t = new Timer(300, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 x++;
                 y++;
 
-                //repaint();
+                repaint();
             }
         });
         t.start();
@@ -101,22 +115,26 @@ public class ClientJPanel extends JPanel {
     }
 
     public static InetAddress getBroadcastAddress() {
-	try {
-		Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-		while (interfaces.hasMoreElements()) {
-			NetworkInterface networkInterface = interfaces.nextElement();
-			if (networkInterface.isLoopback()) continue;
-			for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
-				InetAddress broadcast = interfaceAddress.getBroadcast();
-				if (broadcast != null) return broadcast;
-			}
-		}
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-	return null;
-}
-    
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = interfaces.nextElement();
+                if (networkInterface.isLoopback()) {
+                    continue;
+                }
+                for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+                    InetAddress broadcast = interfaceAddress.getBroadcast();
+                    if (broadcast != null) {
+                        return broadcast;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private void connect(String msg) {
         try {
             String requestTest = "-rqt-";
@@ -156,7 +174,17 @@ public class ClientJPanel extends JPanel {
             g.setColor(new Color(r.nextInt(255), r.nextInt(255), r.nextInt(255)));
             g.fillOval(r.nextInt(this.getWidth() - size), r.nextInt(this.getHeight() - size), size, size);
         }
-
+        Point p = new Point();
+        if (gameStarted) {
+            for (FoodSphereInterface foodSphereInterface : food) {
+                try {
+                    p = foodSphereInterface.getPosition();
+                    g.setColor(Color.white);
+                    g.fillOval(p.x, p.y, foodSphereInterface.getMass(), foodSphereInterface.getMass());
+                } catch (Exception e) {
+                }
+            }
+        }
     }
 
 }
