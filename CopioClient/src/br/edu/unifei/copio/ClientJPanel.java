@@ -53,7 +53,7 @@ public class ClientJPanel extends JPanel {
     private float y;
     private int size;
     private int numJogadores;
-    private FoodSphereInterface[] food;
+    private FoodDiscInterface[] food;
     private boolean gameStarted;
     private Point[] foodPosition;
     private int[] foodMass;
@@ -80,7 +80,7 @@ public class ClientJPanel extends JPanel {
         this();
         gameStarted = false;
         this.frame = frame;
-        food = new FoodSphereInterface[20];
+        food = new FoodDiscInterface[20];
         foodPosition = new Point[20];
         foodMass = new int[20];
     }
@@ -103,7 +103,7 @@ public class ClientJPanel extends JPanel {
                 connect(msg);
                 for (int i = 0; i < 20; i++) {
                     try {
-                        food[i] = (FoodSphereInterface) Naming.lookup("rmi://" + serverIP + ":1090" +"/FoodSphere" + (i + 1));
+                        food[i] = (FoodDiscInterface) Naming.lookup("rmi://" + serverIP + ":1090" +"/FoodSphere" + (i + 1));
                         foodPosition[i] = food[i].getPosition();
                         foodMass[i] = food[i].getMass();
                     } catch (NotBoundException | MalformedURLException | RemoteException ex) {

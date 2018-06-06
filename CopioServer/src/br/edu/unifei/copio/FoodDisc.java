@@ -15,12 +15,12 @@ import javax.swing.JOptionPane;
  *
  * @author lucas
  */
-public class FoodSphere extends UnicastRemoteObject implements FoodSphereInterface {
+public class FoodDisc extends UnicastRemoteObject implements FoodDiscInterface {
     private final int margin = 10;
     private Point position;
     private int mass;
-    private final int screenWidth = 1280;
-    private final int screenHeight = 720;
+    private final int screenWidth = 800;
+    private final int screenHeight = 800;
             
     @Override
     public void eatThis() throws RemoteException {
@@ -36,10 +36,10 @@ public class FoodSphere extends UnicastRemoteObject implements FoodSphereInterfa
         return mass;
     }
     
-    public FoodSphere() throws RemoteException{
+    public FoodDisc() throws RemoteException{
         position = new Point();
         position.x = (new Random()).nextInt(screenWidth - margin) + margin;
         position.y = (new Random()).nextInt(screenHeight - margin) + margin;
-        mass = (new Random()).nextInt(5) + 10;
+        mass = (new Random()).nextInt(50) + 10;
     }    
 }

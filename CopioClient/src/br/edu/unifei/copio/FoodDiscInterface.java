@@ -13,7 +13,7 @@ import java.rmi.RemoteException;
  *
  * @author lucas
  */
-public interface FoodSphereInterface extends Remote {
+public interface FoodDiscInterface extends Remote {
     public void eatThis() throws RemoteException;
     public Point getPosition() throws RemoteException;
     public int getMass() throws RemoteException;

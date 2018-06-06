@@ -50,7 +50,7 @@ public class Servidor {
         Registry gameRegistry = java.rmi.registry.LocateRegistry.createRegistry(1090);
         
         for (int i = 1; i <= 20; i++) {
-            gameRegistry.rebind("FoodSphere" + i, new FoodSphere());
+            gameRegistry.rebind("FoodSphere" + i, new FoodDisc());
         }
         
         for(;;){
