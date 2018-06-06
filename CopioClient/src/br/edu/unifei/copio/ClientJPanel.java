@@ -70,8 +70,7 @@ public class ClientJPanel extends JPanel {
         frame.setLocation(0,0);
         frame.setBackground(Color.MAGENTA);
         this.setSize(1000, 800);
-        
-
+        gameStarted = true;
     }
 
     public ClientJPanel(JFrame frame) throws NotBoundException, MalformedURLException, RemoteException {
@@ -196,7 +195,6 @@ public class ClientJPanel extends JPanel {
         Random r = new Random();
         
         for (int i = 0; i < numJogadores; i++) {
-            
             g.setColor(Color.WHITE);
             g.fillOval((int) x-(size/2), (int) y-(size/2), size, size);
         
