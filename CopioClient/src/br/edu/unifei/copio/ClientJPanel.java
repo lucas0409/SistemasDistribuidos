@@ -54,6 +54,7 @@ public class ClientJPanel extends JPanel {
     private int size;
     private int numJogadores;
     private FoodSphereInterface[] food;
+    private boolean gameStarted;
 
     public void setNumJogadores(int numJogadores) {
         this.numJogadores = numJogadores;
@@ -62,6 +63,7 @@ public class ClientJPanel extends JPanel {
     private void removeComponents() {
         this.remove(txt_playerName);
         this.remove(btn_playGame);
+
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setSize(screenSize.width, screenSize.height);
         //frame.setSize(1000,800);
@@ -69,23 +71,28 @@ public class ClientJPanel extends JPanel {
         frame.setBackground(Color.MAGENTA);
         this.setSize(1000, 800);
         
+
     }
 
     public ClientJPanel(JFrame frame) throws NotBoundException, MalformedURLException, RemoteException {
         this();
+        gameStarted = false;
         this.frame = frame;
         food = new FoodSphereInterface[20];
-        
+
         for (int i = 0; i < 20; i++) {
-            food[i] = (FoodSphereInterface) Naming.lookup("rmi://192.168.0.9:1090/FoodSphere" + (i+1));
-            food[i].eatThis();
+
+        food[i] = (FoodSphereInterface) Naming.lookup("rmi://192.168.0.9:1090/FoodSphere" + (i + 1));
+
         }
     }
 
     public ClientJPanel() {
-        this.setBackground(Color.red);
+        this.setBackground(Color.black);
         x = y = 0;
+      
         size = 100;
+
         btn_playGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -99,6 +106,7 @@ public class ClientJPanel extends JPanel {
                 removeComponents();
             }
         });
+
         Timer t;
         t = new Timer(10, new ActionListener() {
             Point p  = new Point();
@@ -130,22 +138,26 @@ public class ClientJPanel extends JPanel {
     }
 
     public static InetAddress getBroadcastAddress() {
-	try {
-		Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-		while (interfaces.hasMoreElements()) {
-			NetworkInterface networkInterface = interfaces.nextElement();
-			if (networkInterface.isLoopback()) continue;
-			for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
-				InetAddress broadcast = interfaceAddress.getBroadcast();
-				if (broadcast != null) return broadcast;
-			}
-		}
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-	return null;
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = interfaces.nextElement();
+                if (networkInterface.isLoopback()) {
+                    continue;
+                }
+                for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+                    InetAddress broadcast = interfaceAddress.getBroadcast();
+                    if (broadcast != null) {
+                        return broadcast;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
-    
+
     private void connect(String msg) {
         try {
             String requestTest = "-rqt-";
@@ -189,7 +201,17 @@ public class ClientJPanel extends JPanel {
             g.fillOval((int) x-(size/2), (int) y-(size/2), size, size);
         
         }
-
+        Point p = new Point();
+        if (gameStarted) {
+            for (FoodSphereInterface foodSphereInterface : food) {
+                try {
+                    p = foodSphereInterface.getPosition();
+                    g.setColor(Color.white);
+                    g.fillOval(p.x, p.y, foodSphereInterface.getMass(), foodSphereInterface.getMass());
+                } catch (Exception e) {
+                }
+            }
+        }
     }
     
 

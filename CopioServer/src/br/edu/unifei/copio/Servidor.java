@@ -57,6 +57,8 @@ public class Servidor {
             Socket cliente = server.accept(); //espera um cliente conectar
             conexoes++; //incrementa o número de clientes que conectaram ao servidor
             
+            gameRegistry.rebind("Cliente" + conexoes, new RemoteClient());
+            
             System.out.println("Conexões: " + String.valueOf(conexoes)); //mostra o número de clientes que já conectaram
             Thread conexao = new Thread(new ConnectionProtocol(cliente)); //joga cliente para uma Thread separada para tratar a conexão
             conexao.start(); //inicia Thread
