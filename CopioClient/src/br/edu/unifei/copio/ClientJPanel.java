@@ -55,6 +55,8 @@ public class ClientJPanel extends JPanel {
     private int numJogadores;
     private FoodSphereInterface[] food;
     private boolean gameStarted;
+    private Point[] foodPosition;
+    private int[] foodMass;
 
     public void setNumJogadores(int numJogadores) {
         this.numJogadores = numJogadores;
@@ -78,11 +80,13 @@ public class ClientJPanel extends JPanel {
         gameStarted = false;
         this.frame = frame;
         food = new FoodSphereInterface[20];
+        foodPosition = new Point[20];
+        foodMass = new int[20];
 
         for (int i = 0; i < 20; i++) {
-
-        food[i] = (FoodSphereInterface) Naming.lookup("rmi://192.168.0.9:1090/FoodSphere" + (i + 1));
-
+            food[i] = (FoodSphereInterface) Naming.lookup("rmi://192.168.0.9:1090/FoodSphere" + (i + 1));
+            foodPosition[i] = food[i].getPosition();
+            foodMass[i] = food[i].getMass();
         }
     }
 
@@ -199,13 +203,12 @@ public class ClientJPanel extends JPanel {
             g.fillOval((int) x-(size/2), (int) y-(size/2), size, size);
         
         }
-        Point p = new Point();
+
         if (gameStarted) {
-            for (FoodSphereInterface foodSphereInterface : food) {
+            for (int i = 0; i < food.length; i++) {
                 try {
-                    p = foodSphereInterface.getPosition();
                     g.setColor(Color.white);
-                    g.fillOval(p.x, p.y, foodSphereInterface.getMass(), foodSphereInterface.getMass());
+                    g.fillOval(foodPosition[i].x, foodPosition[i].y, foodMass[i], foodMass[i]);
                 } catch (Exception e) {
                 }
             }
