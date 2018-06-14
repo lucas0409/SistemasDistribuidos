@@ -59,6 +59,7 @@ public class ClientJPanel extends JPanel {
     private int[] foodMass;
     private String serverIP;
     Timer t;
+    int velocidade = 4;
 
     public void setNumJogadores(int numJogadores) {
         this.numJogadores = numJogadores;
@@ -70,10 +71,9 @@ public class ClientJPanel extends JPanel {
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setSize(screenSize.width, screenSize.height);
-        //frame.setSize(1000,800);
+        frame.setLayout(null);
         frame.setLocation(0,0);
-        frame.setBackground(Color.MAGENTA);
-        this.setSize(1000, 800);
+        this.setBounds(0, 0, screenSize.width, screenSize.height);
         gameStarted = true;
         t.start();
     }
@@ -91,7 +91,7 @@ public class ClientJPanel extends JPanel {
         this.setBackground(Color.black);
         x = y = 0;
         
-        size = 100;
+        size = 50;
 
         btn_playGame.addActionListener(new ActionListener() {
             @Override
@@ -128,8 +128,8 @@ public class ClientJPanel extends JPanel {
                 float dy = (p.y - y);
                 float d = (float) Math.sqrt((dx*dx)+(dy*dy));
                 
-                float Vx = (3/d)*dx;
-                float Vy = (3/d)*dy;
+                float Vx = (velocidade/d)*dx;
+                float Vy = (velocidade/d)*dy;
                 
                 x += Vx;
                 y += Vy;
@@ -141,6 +141,13 @@ public class ClientJPanel extends JPanel {
                             massa = food[i].eatThis(posCliente, size/2);
                             foodPosition[i] = food[i].getPosition();
                             size += massa;
+                            if(size >= 100 && size < 200 && velocidade == 4){
+                                velocidade --;
+                            }else if (size >= 200 && size < 300  && velocidade == 3) {
+                                velocidade --;
+                            }else if(size >= 300  && velocidade == 2){
+                                velocidade --;
+                            }
                             break;
                         }
                     } catch (RemoteException ex) {
@@ -224,8 +231,8 @@ public class ClientJPanel extends JPanel {
         if (gameStarted) {
             for (int i = 0; i < food.length; i++) {
                 try {
-                    g.setColor(Color.white);
-                    g.fillOval(foodPosition[i].x, foodPosition[i].y, foodMass[i], foodMass[i]);
+                    g.setColor(Color.RED);
+                    g.fillOval(foodPosition[i].x, foodPosition[i].y, foodMass[i]*4, foodMass[i]*4);
                 } catch (Exception e) {
                 }
             }

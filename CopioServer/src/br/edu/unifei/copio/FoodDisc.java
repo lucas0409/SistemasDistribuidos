@@ -5,7 +5,9 @@
  */
 package br.edu.unifei.copio;
 
+import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
@@ -18,8 +20,9 @@ public class FoodDisc extends UnicastRemoteObject implements FoodDiscInterface {
     private final int margin = 10;
     private Point position;
     private int mass;
-    private final int screenWidth = 1280;
-    private final int screenHeight = 720;
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private final int screenWidth = screenSize.width;
+    private final int screenHeight = screenSize.height;
     
     
     public int eatThis(Point p, double raio) throws RemoteException {
