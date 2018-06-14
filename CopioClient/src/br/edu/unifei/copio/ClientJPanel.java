@@ -118,7 +118,6 @@ public class ClientJPanel extends JPanel {
 
         t = new Timer(10, new ActionListener() {
             Point p  = new Point();
-            Point posCliente = new Point((int)x,(int)y);
             int massa = 0;
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -134,15 +133,15 @@ public class ClientJPanel extends JPanel {
                 
                 x += Vx;
                 y += Vy;
+                Point posCliente = new Point((int)x,(int)y);
                 
                 for (int i = 0; i < 20; i++) {
                     try {
                         if(foodPosition[i].distance(x, y) < size/2){          
                             massa = food[i].eatThis(posCliente, size/2);
-                            System.out.println("Massa = " + massa);
                             foodPosition[i] = food[i].getPosition();
                             size += massa;
-                            System.out.println("Massa client = " + size);
+                            break;
                         }
                     } catch (RemoteException ex) {
                         Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
