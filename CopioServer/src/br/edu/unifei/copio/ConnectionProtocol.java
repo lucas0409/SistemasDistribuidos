@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.rmi.registry.Registry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,27 +43,29 @@ public class ConnectionProtocol implements Runnable {
             BufferedReader entrada = new BufferedReader(new InputStreamReader(this.s.getInputStream()));
             PrintStream saida = new PrintStream(this.s.getOutputStream());
             Servidor.nomeCliente = entrada.readLine();
-            
-            if (Servidor.Lista_Users(s, Servidor.nomeCliente)){
+            Registry clientRegistry = java.rmi.registry.LocateRegistry.getRegistry(1091);
+            clientRegistry.rebind(Servidor.nomeCliente, new RemoteClient());
+
+            if (Servidor.Lista_Users(s, Servidor.nomeCliente)) {
                 saida.println("Não foi possível conectar! Nome ja existente");
                 Servidor.conexoes--;
                 this.s.close();
                 return;
             } else {
                 System.out.println(Servidor.nomeCliente + " conectou-se!");
-                for (int i = 0; i < Servidor.listaClientes.size(); i = i+2) {
+                for (int i = 0; i < Servidor.listaClientes.size(); i = i + 2) {
                     Socket sock = (Socket) Servidor.listaClientes.get(i);
                     PrintStream socket_out = new PrintStream(sock.getOutputStream());
                     socket_out.println("-cnt-" + Servidor.conexoes);
                 }
             }
-            
-        } catch (IOException ex ) {
+
+        } catch (IOException ex) {
             if (ex instanceof EOFException) {
-                    System.out.println("User " + Servidor.nomeCliente + " disconnected!");
-                } else {
-                    Logger.getLogger(ConnectionProtocol.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                System.out.println("User " + Servidor.nomeCliente + " disconnected!");
+            } else {
+                Logger.getLogger(ConnectionProtocol.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
+}

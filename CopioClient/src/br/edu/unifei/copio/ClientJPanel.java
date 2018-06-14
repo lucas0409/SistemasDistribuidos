@@ -111,8 +111,8 @@ public class ClientJPanel extends JPanel {
                         Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                try {   
-                    String[] boundNames = Naming.list("rmi://"+serverIP+":1090");
+               try{   
+                    String[] boundNames = Naming.list("rmi://"+serverIP+":1091");
                     for (String boundName : boundNames) {
                         System.out.println(boundName);
                     }
