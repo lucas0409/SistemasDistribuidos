@@ -20,15 +20,20 @@ public class FoodDisc extends UnicastRemoteObject implements FoodDiscInterface {
     private final int margin = 10;
     private Point position;
     private int mass;
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    private final int screenWidth = screenSize.width;
-    private final int screenHeight = screenSize.height;
+    private int screenWidth;
+    private int screenHeight;
+    
+    public void setScreen (int width, int height){
+        screenHeight = height;
+        screenWidth = width;
+        
+    }
     
     
     public int eatThis(Point p, double raio) throws RemoteException {
         if (position.distance(p) < raio){
-            position.x = (new Random()).nextInt(screenWidth - margin) + margin;
-            position.y = (new Random()).nextInt(screenHeight - margin) + margin;
+            position.x = (new Random()).nextInt(screenWidth) - margin;
+            position.y = (new Random()).nextInt(screenHeight) - margin;
         }else{
             return -1;
         }
@@ -48,8 +53,10 @@ public class FoodDisc extends UnicastRemoteObject implements FoodDiscInterface {
     
     public FoodDisc() throws RemoteException{
         position = new Point();
-        position.x = (new Random()).nextInt(screenWidth - margin) + margin;
-        position.y = (new Random()).nextInt(screenHeight - margin) + margin;
+        position.x = (new Random()).nextInt(screenWidth)-margin;
+        
+        position.y = (new Random()).nextInt(screenHeight)-margin;
+        System.out.println("X Y " + position.x + position.y);
         mass = (new Random()).nextInt(5) + 2;
     }    
 }

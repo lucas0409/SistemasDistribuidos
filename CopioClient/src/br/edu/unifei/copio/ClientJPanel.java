@@ -65,7 +65,7 @@ public class ClientJPanel extends JPanel {
         this.numJogadores = numJogadores;
     }
 
-    private void removeComponents() {
+    private void removeComponents() throws RemoteException {
         this.remove(txt_playerName);
         this.remove(btn_playGame);
 
@@ -74,6 +74,7 @@ public class ClientJPanel extends JPanel {
         frame.setLayout(null);
         frame.setLocation(0,0);
         this.setBounds(0, 0, screenSize.width, screenSize.height);
+        food[0].setScreen(screenSize.width, screenSize.height);
         gameStarted = true;
         t.start();
     }
@@ -112,7 +113,11 @@ public class ClientJPanel extends JPanel {
                         Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                removeComponents();
+                try {
+                    removeComponents();
+                } catch (RemoteException ex) {
+                    Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
 
