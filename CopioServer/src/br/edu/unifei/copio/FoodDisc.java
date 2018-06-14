@@ -23,11 +23,13 @@ public class FoodDisc extends UnicastRemoteObject implements FoodDiscInterface {
     
     
     public int eatThis(Point p, double raio) throws RemoteException {
-        
-        if (p.distance(position) < raio){
+        System.out.println("DISTANCIA = " + position.distance(p));
+        System.out.println("RAIO = " + raio);
+        if (position.distance(p) <= raio){
             position.x = (new Random()).nextInt(screenWidth - margin) + margin;
             position.y = (new Random()).nextInt(screenHeight - margin) + margin;
         }else{
+            System.out.println("ENTROU NO ELSE");
             return -1;
         }
             

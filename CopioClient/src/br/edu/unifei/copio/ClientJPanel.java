@@ -137,10 +137,12 @@ public class ClientJPanel extends JPanel {
                 
                 for (int i = 0; i < 20; i++) {
                     try {
-                        if(food[i].getPosition().distance(x, y) < size/2){
+                        if(foodPosition[i].distance(x, y) < size/2){          
                             massa = food[i].eatThis(posCliente, size/2);
+                            System.out.println("Massa = " + massa);
                             foodPosition[i] = food[i].getPosition();
                             size += massa;
+                            System.out.println("Massa client = " + size);
                         }
                     } catch (RemoteException ex) {
                         Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
