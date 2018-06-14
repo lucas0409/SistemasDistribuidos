@@ -70,7 +70,7 @@ public class ClientJPanel extends JPanel {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setSize(screenSize.width, screenSize.height);
         //frame.setSize(1000,800);
-        frame.setLocation(0,0);
+        frame.setLocation(0, 0);
         frame.setBackground(Color.MAGENTA);
         this.setSize(1000, 800);
         gameStarted = true;
@@ -88,7 +88,7 @@ public class ClientJPanel extends JPanel {
     public ClientJPanel() {
         this.setBackground(Color.black);
         x = y = 0;
-        
+
         size = 100;
 
         btn_playGame.addActionListener(new ActionListener() {
@@ -103,12 +103,23 @@ public class ClientJPanel extends JPanel {
                 connect(msg);
                 for (int i = 0; i < 20; i++) {
                     try {
-                        food[i] = (FoodDiscInterface) Naming.lookup("rmi://" + serverIP + ":1090" +"/FoodSphere" + (i + 1));
+                        food[i] = (FoodDiscInterface) Naming.lookup("rmi://" + serverIP + ":1090" + "/FoodSphere" + (i + 1));
                         foodPosition[i] = food[i].getPosition();
-                        foodMass[i] = food[i].getMass();
+                        foodMass[i] = food[i].getMass();                                             
+                        
                     } catch (NotBoundException | MalformedURLException | RemoteException ex) {
                         Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                }
+                try {   
+                    String[] boundNames = Naming.list("rmi://"+serverIP+":1090");
+                    for (String boundName : boundNames) {
+                        System.out.println(boundName);
+                    }
+                } catch (RemoteException ex) {
+                    Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 removeComponents();
             }
@@ -116,22 +127,23 @@ public class ClientJPanel extends JPanel {
 
         Timer t;
         t = new Timer(10, new ActionListener() {
-            Point p  = new Point();
+            Point p = new Point();
+
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+
                 p = MouseInfo.getPointerInfo().getLocation();
-                
+
                 float dx = (p.x - x);
                 float dy = (p.y - y);
-                float d = (float) Math.sqrt((dx*dx)+(dy*dy));
-                
-                float Vx = (3/d)*dx;
-                float Vy = (3/d)*dy;
-                
+                float d = (float) Math.sqrt((dx * dx) + (dy * dy));
+
+                float Vx = (3 / d) * dx;
+                float Vy = (3 / d) * dy;
+
                 x += Vx;
                 y += Vy;
-              
+
                 repaint();
             }
         });
@@ -200,10 +212,10 @@ public class ClientJPanel extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Random r = new Random();
-        
+
         for (int i = 0; i < numJogadores; i++) {
             g.setColor(Color.WHITE);
-            g.fillOval((int) (x-(size/2.0)), (int) (y-(size/2.0)), size, size);
+            g.fillOval((int) (x - (size / 2.0)), (int) (y - (size / 2.0)), size, size);
         }
 
         if (gameStarted) {
@@ -216,6 +228,5 @@ public class ClientJPanel extends JPanel {
             }
         }
     }
-    
 
 }
