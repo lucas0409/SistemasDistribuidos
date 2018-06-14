@@ -28,7 +28,9 @@ import java.net.SocketException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,9 +60,20 @@ public class ClientJPanel extends JPanel {
     private Point[] foodPosition;
     private int[] foodMass;
     private String serverIP;
+    private List<RemoteClientInterface> remoteClient = new ArrayList<RemoteClientInterface>();
 
     public void setNumJogadores(int numJogadores) {
         this.numJogadores = numJogadores;
+    }
+
+    protected void updatePlayerList() throws NotBoundException, RemoteException, MalformedURLException {
+        remoteClient.clear();
+        String[] boundNames = Naming.list("rmi://" + serverIP + ":1091");
+        for (String boundName : boundNames) {
+            remoteClient.add((RemoteClientInterface) Naming.lookup("rmi:" + boundName));
+            System.out.println();
+        }
+
     }
 
     private void removeComponents() {
@@ -105,22 +118,13 @@ public class ClientJPanel extends JPanel {
                     try {
                         food[i] = (FoodDiscInterface) Naming.lookup("rmi://" + serverIP + ":1090" + "/FoodSphere" + (i + 1));
                         foodPosition[i] = food[i].getPosition();
-                        foodMass[i] = food[i].getMass();                                             
-                        
+                        foodMass[i] = food[i].getMass();
+
                     } catch (NotBoundException | MalformedURLException | RemoteException ex) {
                         Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-               try{   
-                    String[] boundNames = Naming.list("rmi://"+serverIP+":1091");
-                    for (String boundName : boundNames) {
-                        System.out.println(boundName);
-                    }
-                } catch (RemoteException ex) {
-                    Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (MalformedURLException ex) {
-                    Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
-                }
+
                 removeComponents();
             }
         });
