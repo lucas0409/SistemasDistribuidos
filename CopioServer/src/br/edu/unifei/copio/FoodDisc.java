@@ -9,7 +9,6 @@ import java.awt.Point;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,11 +20,20 @@ public class FoodDisc extends UnicastRemoteObject implements FoodDiscInterface {
     private int mass;
     private final int screenWidth = 1280;
     private final int screenHeight = 720;
+    
+    
+    public int eatThis(Point p, double raio) throws RemoteException {
+        
+        if (p.distance(position) < raio){
+            position.x = (new Random()).nextInt(screenWidth - margin) + margin;
+            position.y = (new Random()).nextInt(screenHeight - margin) + margin;
+        }else{
+            return -1;
+        }
             
-    @Override
-    public void eatThis() throws RemoteException {
-        System.out.println("COMEU MALUCO!!");
+        return mass;
     }
+    
     @Override
     public Point getPosition() throws RemoteException {
         return position;

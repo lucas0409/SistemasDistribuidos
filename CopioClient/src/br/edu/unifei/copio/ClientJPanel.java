@@ -49,15 +49,16 @@ public class ClientJPanel extends JPanel {
     JFrame frame;
     Socket socket;
     private InetAddress broadcastAddress;
-    private float x;
-    private float y;
-    private int size;
+    private float x = 0;
+    private float y = 0;
+    private int size = 0;
     private int numJogadores;
     private FoodDiscInterface[] food;
     private boolean gameStarted;
     private Point[] foodPosition;
     private int[] foodMass;
     private String serverIP;
+    Timer t;
 
     public void setNumJogadores(int numJogadores) {
         this.numJogadores = numJogadores;
@@ -74,6 +75,7 @@ public class ClientJPanel extends JPanel {
         frame.setBackground(Color.MAGENTA);
         this.setSize(1000, 800);
         gameStarted = true;
+        t.start();
     }
 
     public ClientJPanel(JFrame frame) throws NotBoundException, MalformedURLException, RemoteException {
@@ -114,9 +116,10 @@ public class ClientJPanel extends JPanel {
             }
         });
 
-        Timer t;
         t = new Timer(10, new ActionListener() {
             Point p  = new Point();
+            Point posCliente = new Point((int)x,(int)y);
+            int massa = 0;
             @Override
             public void actionPerformed(ActionEvent e) {
                 
@@ -131,11 +134,22 @@ public class ClientJPanel extends JPanel {
                 
                 x += Vx;
                 y += Vy;
-              
+                
+                for (int i = 0; i < 20; i++) {
+                    try {
+                        if(food[i].getPosition().distance(x, y) < size/2){
+                            massa = food[i].eatThis(posCliente, size/2);
+                            foodPosition[i] = food[i].getPosition();
+                            size += massa;
+                        }
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                
                 repaint();
             }
         });
-        t.start();
 
         this.add(txt_playerName);
         this.add(btn_playGame);
