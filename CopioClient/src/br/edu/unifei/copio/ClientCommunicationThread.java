@@ -45,8 +45,8 @@ public class ClientCommunicationThread implements Runnable {
                                 clienteJ.setNumJogadores(Integer.valueOf(newMsg.substring(5)));
                                 System.out.println(newMsg);
                                 newMsg = "";
-                                clienteJ.repaint();
                                 clienteJ.updatePlayerList();
+                                clienteJ.repaint();                               
                                 break;
                             case ("-dct-"):
                                 clienteJ.setNumJogadores(Integer.valueOf(newMsg.substring(5)));
@@ -57,9 +57,7 @@ public class ClientCommunicationThread implements Runnable {
                     }
                 }
             }
-        } catch (IOException ex) {
-            Logger.getLogger(ClientCommunicationThread.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NotBoundException ex) {
+        } catch (IOException | NotBoundException ex) {
             Logger.getLogger(ClientCommunicationThread.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
