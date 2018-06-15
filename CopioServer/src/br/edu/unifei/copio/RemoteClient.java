@@ -33,11 +33,6 @@ public class RemoteClient extends UnicastRemoteObject implements RemoteClientInt
     }
 
     @Override
-    public void eatThis() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public int getMass() throws RemoteException {
         return mass;
     }

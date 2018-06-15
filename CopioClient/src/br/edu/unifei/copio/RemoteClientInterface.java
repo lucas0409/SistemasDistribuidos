@@ -12,14 +12,8 @@ import java.rmi.RemoteException;
 public interface RemoteClientInterface extends Remote {
     
     public Color getColor() throws RemoteException;
-
-    public void eatThis() throws RemoteException;
-
     public int getMass() throws RemoteException;
-
     public void setMass(int newMass) throws RemoteException;
-
     public Point getPosition() throws RemoteException;
-
     public void setPosition(int x, int y) throws RemoteException;
 }

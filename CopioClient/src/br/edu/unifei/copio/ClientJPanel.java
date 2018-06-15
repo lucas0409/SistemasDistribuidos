@@ -76,8 +76,6 @@ public class ClientJPanel extends JPanel {
         for (String boundName : boundNames) {
             c = (RemoteClientInterface) Naming.lookup("rmi:" + boundName);
             playerInfo p = new playerInfo();
-            p.mass = c.getMass();
-            p.position = c.getPosition();
             p.player = c;
             p.color = c.getColor();
             p.name = boundName.substring(19);
@@ -141,7 +139,6 @@ public class ClientJPanel extends JPanel {
                         FoodDiscInterface rf = (FoodDiscInterface) Naming.lookup("rmi://" + serverIP + ":1090" + "/FoodSphere" + (i + 1));
                         f.food = rf;
                         f.mass = rf.getMass();
-                        f.position = rf.getPosition();
                         remoteFoods[i] = f;
                     } catch (NotBoundException | MalformedURLException | RemoteException ex) {
                         Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -175,9 +172,10 @@ public class ClientJPanel extends JPanel {
                 
                 for (int i = 0; i < 10; i++) {
                     try {
-                        if(remoteFoods[i].position.distance(playerPosition.x, playerPosition.y) < size/2){          
+                        Point p = remoteFoods[i].food.getPosition();
+                        if(p.distance(playerPosition.x, playerPosition.y) < size/2){          
                             massa = remoteFoods[i].food.eatThis(posCliente, size/2);
-                            remoteFoods[i].position = remoteFoods[i].food.getPosition();
+                            p = remoteFoods[i].food.getPosition();
                             size += massa;
                             thisPlayer.setMass(size);
                             if(size >= 100 && size < 200 && velocidade == 4){
@@ -299,17 +297,12 @@ public class ClientJPanel extends JPanel {
                 
 
 class playerInfo {
-
     public RemoteClientInterface player;
-    public Point position;
-    public int mass;
     public String name;
     public Color color;
 }
 
 class foodInfo {
-
     public FoodDiscInterface food;
-    public Point position;
     public int mass;
 }
