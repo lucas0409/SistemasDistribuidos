@@ -28,7 +28,9 @@ import java.net.SocketException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,36 +47,61 @@ import javax.swing.Timer;
 public class ClientJPanel extends JPanel {
 
     JTextField txt_playerName = new JTextField(10);
+    String playerName;
+    int playerIndex;
     JButton btn_playGame = new JButton("Jogar!");
     JFrame frame;
     Socket socket;
+    private Timer t;
+    private RemoteClientInterface thisPlayer = null;
     private InetAddress broadcastAddress;
     private float x = 0;
     private float y = 0;
     private int size = 0;
+    private Point playerPosition = new Point();
     private int numJogadores;
-    private FoodDiscInterface[] food;
     private boolean gameStarted;
-    private Point[] foodPosition;
-    private int[] foodMass;
     private String serverIP;
-    Timer t;
     int velocidade = 4;
+    private foodInfo[] remoteFoods;
+    private ArrayList<playerInfo> remoteClients = new ArrayList<playerInfo>();
 
     public void setNumJogadores(int numJogadores) {
         this.numJogadores = numJogadores;
     }
 
-    private void removeComponents(){
+    protected void updatePlayerList() throws NotBoundException, RemoteException, MalformedURLException {
+        RemoteClientInterface c;
+        remoteClients.clear();
+        if(thisPlayer == null){
+            thisPlayer = (RemoteClientInterface) Naming.lookup("rmi://" + serverIP + ":1091/" +playerName);
+            thisPlayer.setMass(size);
+        }
+        String[] boundNames = Naming.list("rmi://" + serverIP + ":1091");
+        int i = 0;
+        for (String boundName : boundNames) {
+            c = (RemoteClientInterface) Naming.lookup("rmi:" + boundName);
+            playerInfo p = new playerInfo();
+            p.mass = c.getMass();
+            p.position = c.getPosition();
+            p.player = c;
+            p.color = c.getColor();
+            p.name = boundName.substring(19);
+            remoteClients.add(p);
+            i++;
+        }
+    }
+
+    private void removeComponents() {
         this.remove(txt_playerName);
         this.remove(btn_playGame);
 
-//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//        frame.setSize(screenSize.width, screenSize.height);
-        frame.setSize(1500,1000);
-        frame.setLayout(null);
-        frame.setLocation(0,0);
-        this.setBounds(0, 0, 1500, 1000);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        frame.setSize(screenSize.width, screenSize.height);
+        //frame.setSize(1000,800);
+        frame.setLocation(0, 0);
+        frame.setBackground(Color.MAGENTA);
+        this.setSize(1000, 800);
         gameStarted = true;
         t.start();
     }
@@ -83,50 +110,63 @@ public class ClientJPanel extends JPanel {
         this();
         gameStarted = false;
         this.frame = frame;
-        food = new FoodDiscInterface[20];
-        foodPosition = new Point[20];
-        foodMass = new int[20];
+        remoteFoods = new foodInfo[20];
     }
 
     public ClientJPanel() {
         this.setBackground(Color.black);
         x = y = 0;
-        
         size = 50;
+        playerPosition.x = playerPosition.y = 0;
+
 
         btn_playGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String msg;
                 if (txt_playerName.getText() != null) {
-                    msg = txt_playerName.getText();
+                    playerName = txt_playerName.getText();
                 } else {
-                    msg = "Convidado";
+                    playerName = "Convidado";
                 }
-                connect(msg);
+                connect(playerName);
+                foodInfo f;
                 for (int i = 0; i < 20; i++) {
                     try {
-                        food[i] = (FoodDiscInterface) Naming.lookup("rmi://" + serverIP + ":1090" +"/FoodSphere" + (i + 1));
-                        foodPosition[i] = food[i].getPosition();
-                        foodMass[i] = food[i].getMass();
+                        f = new foodInfo();
+                        FoodDiscInterface rf = (FoodDiscInterface) Naming.lookup("rmi://" + serverIP + ":1090" + "/FoodSphere" + (i + 1));
+                        f.food = rf;
+                        f.mass = rf.getMass();
+                        f.position = rf.getPosition();
+                        remoteFoods[i] = f;
                     } catch (NotBoundException | MalformedURLException | RemoteException ex) {
                         Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+
                 removeComponents();
             }
         });
-
-        t = new Timer(10, new ActionListener() {
-            Point p  = new Point();
+        
+        t = new Timer(20, new ActionListener() {
+            Point p = new Point();
             int massa = 0;
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+
                 p = MouseInfo.getPointerInfo().getLocation();
+
+                float dx = (p.x - playerPosition.x);
+                float dy = (p.y - playerPosition.y);
+                float d = (float) Math.sqrt((dx * dx) + (dy * dy));
+
+                float Vx = (3 / d) * dx;
+                float Vy = (3 / d) * dy;
+
+                playerPosition.x += Vx;
+                playerPosition.y += Vy;
                 
-                float dx = (p.x - x);
-                float dy = (p.y - y);
+                float dx = (p.x - playerPosition.x);
+                float dy = (p.y - playerPosition.y);
                 float d = (float) Math.sqrt((dx*dx)+(dy*dy));
                 
                 float Vx = (velocidade/d)*dx;
@@ -151,11 +191,13 @@ public class ClientJPanel extends JPanel {
                             }
                             break;
                         }
+                if(thisPlayer != null){
+                    try {
+                        thisPlayer.setPosition(playerPosition.x, playerPosition.y);
                     } catch (RemoteException ex) {
                         Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                
                 repaint();
             }
         });
@@ -222,23 +264,54 @@ public class ClientJPanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Random r = new Random();
-        
-        for (int i = 0; i < numJogadores; i++) {
-            g.setColor(Color.WHITE);
-            g.fillOval((int) (x-(size/2.0)), (int) (y-(size/2.0)), size, size);
-        }
 
+        /*for (int i = 0; i < numJogadores; i++) {
+            g.setColor(Color.WHITE);
+            g.fillOval((int) (playerPosition.x - (size / 2.0)), (int) (playerPosition.y - (size / 2.0)), size, size);
+        }*/
         if (gameStarted) {
-            for (int i = 0; i < food.length; i++) {
+            for (int i = 0; i < remoteFoods.length; i++) {
                 try {
                     g.setColor(Color.RED);
                     g.fillOval(foodPosition[i].x, foodPosition[i].y, foodMass[i]*4, foodMass[i]*4);
+
+                    g.setColor(Color.white);
+                    g.fillOval(remoteFoods[i].position.x, remoteFoods[i].position.y, remoteFoods[i].mass*4, remoteFoods[i].mass*4);
+
                 } catch (Exception e) {
                 }
             }
+            for (playerInfo remoteClient : remoteClients) {
+                Point p = null;
+                int mass = 0;
+                Color c = null;
+                try {
+                    c = remoteClient.color;
+                    p = remoteClient.player.getPosition();
+                    mass = remoteClient.player.getMass();
+                } catch (RemoteException ex) {
+                    Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                g.setColor(c);
+                g.fillOval((int) (p.x - (mass / 2.0)), (int) (p.y - (mass / 2.0)), mass, mass);
+            }
         }
     }
-    
 
+}
+
+class playerInfo {
+
+    public RemoteClientInterface player;
+    public Point position;
+    public int mass;
+    public String name;
+    public Color color;
+}
+
+class foodInfo {
+
+    public FoodDiscInterface food;
+    public Point position;
+    public int mass;
 }

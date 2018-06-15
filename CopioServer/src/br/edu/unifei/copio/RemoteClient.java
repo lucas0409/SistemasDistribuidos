@@ -7,6 +7,7 @@ package br.edu.unifei.copio;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
@@ -15,7 +16,7 @@ import java.util.Random;
  *
  * @author Gianetti
  */
-public class RemoteClient extends UnicastRemoteObject implements RemoteClientInterface {
+public class RemoteClient extends UnicastRemoteObject implements RemoteClientInterface, Serializable {
 
     private Point position;
     private int mass;
