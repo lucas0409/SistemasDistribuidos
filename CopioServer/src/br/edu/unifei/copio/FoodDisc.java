@@ -5,11 +5,12 @@
  */
 package br.edu.unifei.copio;
 
+import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,13 +20,20 @@ public class FoodDisc extends UnicastRemoteObject implements FoodDiscInterface {
     private final int margin = 10;
     private Point position;
     private int mass;
-    private final int screenWidth = 1280;
-    private final int screenHeight = 720;
+    private int screenWidth = 1500;
+    private int screenHeight = 1000;
+    
+    public int eatThis(Point p, double raio) throws RemoteException {
+        if (position.distance(p) < raio){
+            position.x = (new Random()).nextInt(screenWidth) - margin;
+            position.y = (new Random()).nextInt(screenHeight) - margin;
+        }else{
+            return -1;
+        }
             
-    @Override
-    public void eatThis() throws RemoteException {
-        System.out.println("COMEU MALUCO!!");
+        return mass;
     }
+    
     @Override
     public Point getPosition() throws RemoteException {
         return position;
@@ -38,8 +46,8 @@ public class FoodDisc extends UnicastRemoteObject implements FoodDiscInterface {
     
     public FoodDisc() throws RemoteException{
         position = new Point();
-        position.x = (new Random()).nextInt(screenWidth - margin) + margin;
-        position.y = (new Random()).nextInt(screenHeight - margin) + margin;
-        mass = (new Random()).nextInt(5) + 10;
+        position.x = (new Random()).nextInt(screenWidth)-margin;   
+        position.y = (new Random()).nextInt(screenHeight)-margin;
+        mass = (new Random()).nextInt(5) + 2;
     }    
 }

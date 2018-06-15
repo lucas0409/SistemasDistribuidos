@@ -49,31 +49,34 @@ public class ClientJPanel extends JPanel {
     JFrame frame;
     Socket socket;
     private InetAddress broadcastAddress;
-    private float x;
-    private float y;
-    private int size;
+    private float x = 0;
+    private float y = 0;
+    private int size = 0;
     private int numJogadores;
     private FoodDiscInterface[] food;
     private boolean gameStarted;
     private Point[] foodPosition;
     private int[] foodMass;
     private String serverIP;
+    Timer t;
+    int velocidade = 4;
 
     public void setNumJogadores(int numJogadores) {
         this.numJogadores = numJogadores;
     }
 
-    private void removeComponents() {
+    private void removeComponents(){
         this.remove(txt_playerName);
         this.remove(btn_playGame);
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setSize(screenSize.width, screenSize.height);
-        //frame.setSize(1000,800);
+//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//        frame.setSize(screenSize.width, screenSize.height);
+        frame.setSize(1500,1000);
+        frame.setLayout(null);
         frame.setLocation(0,0);
-        frame.setBackground(Color.MAGENTA);
-        this.setSize(1000, 800);
+        this.setBounds(0, 0, 1500, 1000);
         gameStarted = true;
+        t.start();
     }
 
     public ClientJPanel(JFrame frame) throws NotBoundException, MalformedURLException, RemoteException {
@@ -89,7 +92,7 @@ public class ClientJPanel extends JPanel {
         this.setBackground(Color.black);
         x = y = 0;
         
-        size = 100;
+        size = 50;
 
         btn_playGame.addActionListener(new ActionListener() {
             @Override
@@ -114,9 +117,9 @@ public class ClientJPanel extends JPanel {
             }
         });
 
-        Timer t;
         t = new Timer(10, new ActionListener() {
             Point p  = new Point();
+            int massa = 0;
             @Override
             public void actionPerformed(ActionEvent e) {
                 
@@ -126,16 +129,36 @@ public class ClientJPanel extends JPanel {
                 float dy = (p.y - y);
                 float d = (float) Math.sqrt((dx*dx)+(dy*dy));
                 
-                float Vx = (3/d)*dx;
-                float Vy = (3/d)*dy;
+                float Vx = (velocidade/d)*dx;
+                float Vy = (velocidade/d)*dy;
                 
                 x += Vx;
                 y += Vy;
-              
+                Point posCliente = new Point((int)x,(int)y);
+                
+                for (int i = 0; i < 20; i++) {
+                    try {
+                        if(foodPosition[i].distance(x, y) < size/2){          
+                            massa = food[i].eatThis(posCliente, size/2);
+                            foodPosition[i] = food[i].getPosition();
+                            size += massa;
+                            if(size >= 100 && size < 200 && velocidade == 4){
+                                velocidade --;
+                            }else if (size >= 200 && size < 300  && velocidade == 3) {
+                                velocidade --;
+                            }else if(size >= 300  && velocidade == 2){
+                                velocidade --;
+                            }
+                            break;
+                        }
+                    } catch (RemoteException ex) {
+                        Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                
                 repaint();
             }
         });
-        t.start();
 
         this.add(txt_playerName);
         this.add(btn_playGame);
@@ -209,8 +232,8 @@ public class ClientJPanel extends JPanel {
         if (gameStarted) {
             for (int i = 0; i < food.length; i++) {
                 try {
-                    g.setColor(Color.white);
-                    g.fillOval(foodPosition[i].x, foodPosition[i].y, foodMass[i], foodMass[i]);
+                    g.setColor(Color.RED);
+                    g.fillOval(foodPosition[i].x, foodPosition[i].y, foodMass[i]*4, foodMass[i]*4);
                 } catch (Exception e) {
                 }
             }
