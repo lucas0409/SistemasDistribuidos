@@ -29,6 +29,7 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -90,10 +91,11 @@ public class ClientJPanel extends JPanel {
 
     public ClientJPanel() {
         this.setBackground(Color.black);
-        x = y = 0;
+        this.setBounds(0,250,400, 250);
         
+        x = y = 0;
         size = 50;
-
+               
         btn_playGame.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -159,7 +161,6 @@ public class ClientJPanel extends JPanel {
                 repaint();
             }
         });
-
         this.add(txt_playerName);
         this.add(btn_playGame);
 

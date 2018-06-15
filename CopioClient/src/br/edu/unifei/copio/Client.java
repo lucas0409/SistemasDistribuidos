@@ -21,9 +21,10 @@ public class Client {
     
     public static void main(String[] args) throws NotBoundException, MalformedURLException, RemoteException{
         JFrame frame = new JFrame("Cop.io");
+        frame.setLayout(null);
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         frame.add(new ClientJPanel(frame));
-        frame.setSize( 300, 100 ); // set frame size
+        frame.setBounds(500, 500, 400, 500);
         frame.setVisible( true ); // display frame
         frame.setResizable(false);
     }    
