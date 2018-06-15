@@ -94,7 +94,7 @@ public class ClientJPanel extends JPanel {
         this.remove(txt_playerName);
         this.remove(btn_playGame);
         
-        frame.setSize(1000, 800);
+        frame.setSize(1000, 600);
         frame.setLayout(null);
         frame.setLocation(0, 0);
         this.setBounds(0,0,1000,600);
