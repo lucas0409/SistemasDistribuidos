@@ -55,11 +55,12 @@ public class ClientJPanel extends JPanel {
     private Timer t;
     private RemoteClientInterface thisPlayer = null;
     private InetAddress broadcastAddress;
+    private int size = 0;
     private Point playerPosition = new Point();
-    private int size;
     private int numJogadores;
     private boolean gameStarted;
     private String serverIP;
+    int velocidade = 4;
     private foodInfo[] remoteFoods;
     private ArrayList<playerInfo> remoteClients = new ArrayList<playerInfo>();
 
@@ -112,9 +113,9 @@ public class ClientJPanel extends JPanel {
 
     public ClientJPanel() {
         this.setBackground(Color.black);
+        size = 50;
         playerPosition.x = playerPosition.y = 0;
 
-        size = 100;
 
         btn_playGame.addActionListener(new ActionListener() {
             @Override
@@ -145,7 +146,7 @@ public class ClientJPanel extends JPanel {
         
         t = new Timer(20, new ActionListener() {
             Point p = new Point();
-
+            int massa = 0;
             @Override
             public void actionPerformed(ActionEvent e) {
 
@@ -160,7 +161,29 @@ public class ClientJPanel extends JPanel {
 
                 playerPosition.x += Vx;
                 playerPosition.y += Vy;
+
                 
+                Point posCliente = new Point((int)playerPosition.x,(int)playerPosition.y);
+                
+                for (int i = 0; i < 20; i++) {
+                    try {
+                        if(remoteFoods[i].position.distance(playerPosition.x, playerPosition.y) < size/2){          
+                            massa = remoteFoods[i].food.eatThis(posCliente, size/2);
+                            remoteFoods[i].position = remoteFoods[i].food.getPosition();
+                            size += massa;
+                            if(size >= 100 && size < 200 && velocidade == 4){
+                                velocidade --;
+                            }else if (size >= 200 && size < 300  && velocidade == 3) {
+                                velocidade --;
+                            }else if(size >= 300  && velocidade == 2){
+                                velocidade --;
+                            }
+                            break;
+                        }
+                    }catch (RemoteException ex) {
+                        Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
                 if(thisPlayer != null){
                     try {
                         thisPlayer.setPosition(playerPosition.x, playerPosition.y);
@@ -170,6 +193,7 @@ public class ClientJPanel extends JPanel {
                 }
                 repaint();
             }
+                    
         });
 
         this.add(txt_playerName);
@@ -242,8 +266,12 @@ public class ClientJPanel extends JPanel {
         if (gameStarted) {
             for (int i = 0; i < remoteFoods.length; i++) {
                 try {
+                    g.setColor(Color.RED);
+                    g.fillOval(remoteFoods[i].position.x, remoteFoods[i].position.y, remoteFoods[i].mass*4, remoteFoods[i].mass*4);
+
                     g.setColor(Color.white);
-                    g.fillOval(remoteFoods[i].position.x, remoteFoods[i].position.y, remoteFoods[i].mass, remoteFoods[i].mass);
+                    g.fillOval(remoteFoods[i].position.x, remoteFoods[i].position.y, remoteFoods[i].mass*4, remoteFoods[i].mass*4);
+
                 } catch (Exception e) {
                 }
             }
@@ -265,6 +293,7 @@ public class ClientJPanel extends JPanel {
     }
 
 }
+                
 
 class playerInfo {
 
