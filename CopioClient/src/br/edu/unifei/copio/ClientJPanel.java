@@ -93,13 +93,11 @@ public class ClientJPanel extends JPanel {
     private void removeComponents() {
         this.remove(txt_playerName);
         this.remove(btn_playGame);
-
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setSize(screenSize.width, screenSize.height);
-        //frame.setSize(1000,800);
+        
+        frame.setSize(1000, 800);
+        frame.setLayout(null);
         frame.setLocation(0, 0);
-        frame.setBackground(Color.MAGENTA);
-        this.setSize(1000, 800);
+        this.setBounds(0,0,1000,600);
         gameStarted = true;
         t.start();
     }
@@ -171,6 +169,7 @@ public class ClientJPanel extends JPanel {
                             massa = remoteFoods[i].food.eatThis(posCliente, size/2);
                             remoteFoods[i].position = remoteFoods[i].food.getPosition();
                             size += massa;
+                            thisPlayer.setMass(size);
                             if(size >= 100 && size < 200 && velocidade == 4){
                                 velocidade --;
                             }else if (size >= 200 && size < 300  && velocidade == 3) {
