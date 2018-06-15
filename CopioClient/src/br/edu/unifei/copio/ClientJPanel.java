@@ -65,16 +65,16 @@ public class ClientJPanel extends JPanel {
         this.numJogadores = numJogadores;
     }
 
-    private void removeComponents() throws RemoteException {
+    private void removeComponents(){
         this.remove(txt_playerName);
         this.remove(btn_playGame);
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setSize(screenSize.width, screenSize.height);
+//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//        frame.setSize(screenSize.width, screenSize.height);
+        frame.setSize(1500,1000);
         frame.setLayout(null);
         frame.setLocation(0,0);
-        this.setBounds(0, 0, screenSize.width, screenSize.height);
-        food[0].setScreen(screenSize.width, screenSize.height);
+        this.setBounds(0, 0, 1500, 1000);
         gameStarted = true;
         t.start();
     }
@@ -113,11 +113,7 @@ public class ClientJPanel extends JPanel {
                         Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                try {
-                    removeComponents();
-                } catch (RemoteException ex) {
-                    Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                removeComponents();
             }
         });
 
