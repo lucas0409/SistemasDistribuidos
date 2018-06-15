@@ -142,7 +142,7 @@ public class ClientJPanel extends JPanel {
             }
         });
         
-        t = new Timer(30, new ActionListener() {
+        t = new Timer(300, new ActionListener() {
             Point p = new Point();
 
             @Override
@@ -249,12 +249,14 @@ public class ClientJPanel extends JPanel {
             for (playerInfo remoteClient : remoteClients) {
                 g.setColor(Color.MAGENTA);
                 Point p = null;
+                int mass = 0;
                 try {
                     p = remoteClient.player.getPosition();
+                    mass = remoteClient.player.getMass();
                 } catch (RemoteException ex) {
                     Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                g.fillOval((int) (p.x - (remoteClient.mass / 2.0)), (int) (p.y - (remoteClient.mass / 2.0)), remoteClient.mass, remoteClient.mass);
+                g.fillOval((int) (p.x - (mass / 2.0)), (int) (p.y - (mass / 2.0)), mass, mass);
             }
         }
     }
