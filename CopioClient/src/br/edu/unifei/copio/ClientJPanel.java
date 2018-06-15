@@ -232,16 +232,16 @@ public class ClientJPanel extends JPanel {
     private void connect(String msg) {
         try {
             String requestTest = "-rqt-";
-            DatagramSocket dgSocket = new DatagramSocket(PORT);
+            DatagramSocket dgSocket = new DatagramSocket(PORT+1);
             broadcastAddress = getBroadcastAddress();
 
-            DatagramPacket dgSendPacket = new DatagramPacket(requestTest.getBytes(), requestTest.getBytes().length, broadcastAddress, PORT);
+            DatagramPacket dgSendPacket = new DatagramPacket(requestTest.getBytes(), requestTest.getBytes().length, broadcastAddress, PORT+1);
             DatagramPacket dgReceivePacket = new DatagramPacket(new byte[MAXSIZE], MAXSIZE); //pacote UDP para receber a mensagem de broadcast do servidor
             dgSocket.setBroadcast(true);
             dgSocket.send(dgSendPacket);  //Cliente grita em broadcast por Datagrama com ip do servidor
             dgSocket.close();
 
-            dgSocket = new DatagramSocket(PORT);
+            dgSocket = new DatagramSocket(PORT+1);
             dgSocket.setBroadcast(true);
             dgSocket.receive(dgReceivePacket); //método que coloca o pacote que está no socket criado na porta PORT em dgReceivePacket
 
