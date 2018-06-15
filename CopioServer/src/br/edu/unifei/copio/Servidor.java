@@ -52,7 +52,7 @@ public class Servidor {
 
         Registry foodRegistry = java.rmi.registry.LocateRegistry.createRegistry(1090);
         Registry clientRegistry = java.rmi.registry.LocateRegistry.createRegistry(1091);
-        for (int i = 1; i <= 20; i++) {
+        for (int i = 1; i <= 10; i++) {
             foodRegistry.rebind("FoodSphere" + i, new FoodDisc());
         }
 

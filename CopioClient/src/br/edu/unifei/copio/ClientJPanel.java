@@ -127,7 +127,7 @@ public class ClientJPanel extends JPanel {
                 }
                 connect(playerName);
                 foodInfo f;
-                for (int i = 0; i < 20; i++) {
+                for (int i = 0; i < 10; i++) {
                     try {
                         f = new foodInfo();
                         FoodDiscInterface rf = (FoodDiscInterface) Naming.lookup("rmi://" + serverIP + ":1090" + "/FoodSphere" + (i + 1));
@@ -165,7 +165,7 @@ public class ClientJPanel extends JPanel {
                 
                 Point posCliente = new Point((int)playerPosition.x,(int)playerPosition.y);
                 
-                for (int i = 0; i < 20; i++) {
+                for (int i = 0; i < 10; i++) {
                     try {
                         if(remoteFoods[i].position.distance(playerPosition.x, playerPosition.y) < size/2){          
                             massa = remoteFoods[i].food.eatThis(posCliente, size/2);
@@ -266,12 +266,9 @@ public class ClientJPanel extends JPanel {
         if (gameStarted) {
             for (int i = 0; i < remoteFoods.length; i++) {
                 try {
+                    Point p = remoteFoods[i].food.getPosition();
                     g.setColor(Color.RED);
-                    g.fillOval(remoteFoods[i].position.x, remoteFoods[i].position.y, remoteFoods[i].mass*4, remoteFoods[i].mass*4);
-
-                    g.setColor(Color.white);
-                    g.fillOval(remoteFoods[i].position.x, remoteFoods[i].position.y, remoteFoods[i].mass*4, remoteFoods[i].mass*4);
-
+                    g.fillOval(p.x, p.y, remoteFoods[i].mass*4, remoteFoods[i].mass*4);
                 } catch (Exception e) {
                 }
             }
