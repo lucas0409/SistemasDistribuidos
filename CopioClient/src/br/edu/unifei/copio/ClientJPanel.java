@@ -267,7 +267,7 @@ public class ClientJPanel extends JPanel {
                 try {
                     Point p = remoteFoods[i].food.getPosition();
                     g.setColor(Color.RED);
-                    g.fillOval(p.x, p.y, remoteFoods[i].mass*4, remoteFoods[i].mass*4);
+                    g.fillOval(p.x - remoteFoods[i].mass*2, p.y - remoteFoods[i].mass*2, remoteFoods[i].mass*4, remoteFoods[i].mass*4);
                 } catch (Exception e) {
                 }
             }
