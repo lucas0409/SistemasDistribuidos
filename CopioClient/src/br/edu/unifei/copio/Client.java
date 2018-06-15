@@ -29,7 +29,7 @@ public class Client {
         panel.setBounds(0, 200, 300, 170);
         frame.setLayout(null);
         frame.getContentPane().add(panel);
-        ImageIcon icon = new ImageIcon("CopioClient\\src\\br\\edu\\unifei\\copio\\Logo.png");
+        ImageIcon icon = new ImageIcon("src\\br\\edu\\unifei\\copio\\Logo.png");
         JLabel label = new JLabel(icon);
         label.setBounds(0, 0, 300, 200);
         frame.getContentPane().add(label);
