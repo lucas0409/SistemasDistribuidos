@@ -82,6 +82,7 @@ public class ClientJPanel extends JPanel {
             p.mass = c.getMass();
             p.position = c.getPosition();
             p.player = c;
+            p.color = c.getColor();
             p.name = boundName.substring(19);
             remoteClients.add(p);
             i++;
@@ -142,7 +143,7 @@ public class ClientJPanel extends JPanel {
             }
         });
         
-        t = new Timer(300, new ActionListener() {
+        t = new Timer(20, new ActionListener() {
             Point p = new Point();
 
             @Override
@@ -247,15 +248,17 @@ public class ClientJPanel extends JPanel {
                 }
             }
             for (playerInfo remoteClient : remoteClients) {
-                g.setColor(Color.MAGENTA);
                 Point p = null;
                 int mass = 0;
+                Color c = null;
                 try {
+                    c = remoteClient.color;
                     p = remoteClient.player.getPosition();
                     mass = remoteClient.player.getMass();
                 } catch (RemoteException ex) {
                     Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                g.setColor(c);
                 g.fillOval((int) (p.x - (mass / 2.0)), (int) (p.y - (mass / 2.0)), mass, mass);
             }
         }
@@ -269,6 +272,7 @@ class playerInfo {
     public Point position;
     public int mass;
     public String name;
+    public Color color;
 }
 
 class foodInfo {
