@@ -25,11 +25,11 @@ public class Client {
     
     public static void main(String[] args) throws NotBoundException, MalformedURLException, RemoteException{
         JFrame frame = new JFrame("Cop.io");
-        JPanel panel = new ClientJPanel();
+        JPanel panel = new ClientJPanel(frame);
         panel.setBounds(0, 200, 300, 170);
         frame.setLayout(null);
         frame.getContentPane().add(panel);
-        ImageIcon icon = new ImageIcon("C:\\Users\\decof\\Documents\\git\\SistemasDistribuidos\\CopioClient\\src\\br\\edu\\unifei\\copio\\Logo.png");
+        ImageIcon icon = new ImageIcon("CopioClient\\src\\br\\edu\\unifei\\copio\\Logo.png");
         JLabel label = new JLabel(icon);
         label.setBounds(0, 0, 300, 200);
         frame.getContentPane().add(label);
