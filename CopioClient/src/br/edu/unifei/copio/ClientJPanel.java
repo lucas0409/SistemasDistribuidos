@@ -87,7 +87,10 @@ public class ClientJPanel extends JPanel {
     private void removeComponents() {
         this.remove(txt_playerName);
         this.remove(btn_playGame);
-        
+        this.remove(txt_DigiteAqui);
+        this.setBackground(Color.BLACK);
+        frame.getContentPane().removeAll();
+        frame.getContentPane().add(this);
         frame.setSize(1000, 600);
         frame.setLayout(null);
         frame.setLocation(0, 0);
@@ -100,7 +103,7 @@ public class ClientJPanel extends JPanel {
         this();
         gameStarted = false;
         this.frame = frame;
-        remoteFoods = new foodInfo[20];
+        remoteFoods = new foodInfo[10];
     }
 
     public ClientJPanel() {
@@ -136,7 +139,7 @@ public class ClientJPanel extends JPanel {
                 for (int i = 0; i < 10; i++) {
                     try {
                         f = new foodInfo();
-                        FoodDiscInterface rf = (FoodDiscInterface) Naming.lookup("rmi://" + serverIP + ":1090" + "/FoodSphere" + (i + 1));
+                        FoodDiscInterface rf = (FoodDiscInterface) Naming.lookup("rmi://" + serverIP + ":1090" + "/FoodDisc" + i);
                         f.food = rf;
                         f.mass = rf.getMass();
                         remoteFoods[i] = f;
@@ -262,11 +265,6 @@ public class ClientJPanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        /*for (int i = 0; i < numJogadores; i++) {
-            g.setColor(Color.WHITE);
-            g.fillOval((int) (playerPosition.x - (size / 2.0)), (int) (playerPosition.y - (size / 2.0)), size, size);
-        }*/
         if (gameStarted) {
             for (int i = 0; i < remoteFoods.length; i++) {
                 try {
