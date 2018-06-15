@@ -55,8 +55,6 @@ public class ClientJPanel extends JPanel {
     private Timer t;
     private RemoteClientInterface thisPlayer = null;
     private InetAddress broadcastAddress;
-    private float x = 0;
-    private float y = 0;
     private int size = 0;
     private Point playerPosition = new Point();
     private int numJogadores;
@@ -115,7 +113,6 @@ public class ClientJPanel extends JPanel {
 
     public ClientJPanel() {
         this.setBackground(Color.black);
-        x = y = 0;
         size = 50;
         playerPosition.x = playerPosition.y = 0;
 
@@ -164,23 +161,15 @@ public class ClientJPanel extends JPanel {
 
                 playerPosition.x += Vx;
                 playerPosition.y += Vy;
+
                 
-                float dx = (p.x - playerPosition.x);
-                float dy = (p.y - playerPosition.y);
-                float d = (float) Math.sqrt((dx*dx)+(dy*dy));
-                
-                float Vx = (velocidade/d)*dx;
-                float Vy = (velocidade/d)*dy;
-                
-                x += Vx;
-                y += Vy;
-                Point posCliente = new Point((int)x,(int)y);
+                Point posCliente = new Point((int)playerPosition.x,(int)playerPosition.y);
                 
                 for (int i = 0; i < 20; i++) {
                     try {
-                        if(foodPosition[i].distance(x, y) < size/2){          
-                            massa = food[i].eatThis(posCliente, size/2);
-                            foodPosition[i] = food[i].getPosition();
+                        if(remoteFoods[i].position.distance(playerPosition.x, playerPosition.y) < size/2){          
+                            massa = remoteFoods[i].food.eatThis(posCliente, size/2);
+                            remoteFoods[i].position = remoteFoods[i].food.getPosition();
                             size += massa;
                             if(size >= 100 && size < 200 && velocidade == 4){
                                 velocidade --;
@@ -191,6 +180,10 @@ public class ClientJPanel extends JPanel {
                             }
                             break;
                         }
+                    }catch (RemoteException ex) {
+                        Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
                 if(thisPlayer != null){
                     try {
                         thisPlayer.setPosition(playerPosition.x, playerPosition.y);
@@ -200,6 +193,7 @@ public class ClientJPanel extends JPanel {
                 }
                 repaint();
             }
+                    
         });
 
         this.add(txt_playerName);
@@ -273,7 +267,7 @@ public class ClientJPanel extends JPanel {
             for (int i = 0; i < remoteFoods.length; i++) {
                 try {
                     g.setColor(Color.RED);
-                    g.fillOval(foodPosition[i].x, foodPosition[i].y, foodMass[i]*4, foodMass[i]*4);
+                    g.fillOval(remoteFoods[i].position.x, remoteFoods[i].position.y, remoteFoods[i].mass*4, remoteFoods[i].mass*4);
 
                     g.setColor(Color.white);
                     g.fillOval(remoteFoods[i].position.x, remoteFoods[i].position.y, remoteFoods[i].mass*4, remoteFoods[i].mass*4);
@@ -299,6 +293,7 @@ public class ClientJPanel extends JPanel {
     }
 
 }
+                
 
 class playerInfo {
 
