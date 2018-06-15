@@ -78,13 +78,11 @@ public class ClientJPanel extends JPanel {
         int i = 0;
         for (String boundName : boundNames) {
             c = (RemoteClientInterface) Naming.lookup("rmi:" + boundName);
-            if(boundName.contains("//"+serverIP+":1091/"+playerName)){
-                playerIndex = i;
-            }
             playerInfo p = new playerInfo();
             p.mass = c.getMass();
             p.position = c.getPosition();
             p.player = c;
+            p.name = boundName.substring(19);
             remoteClients.add(p);
             i++;
         }
@@ -144,7 +142,7 @@ public class ClientJPanel extends JPanel {
             }
         });
         
-        t = new Timer(10, new ActionListener() {
+        t = new Timer(30, new ActionListener() {
             Point p = new Point();
 
             @Override
@@ -165,7 +163,6 @@ public class ClientJPanel extends JPanel {
                 if(thisPlayer != null){
                     try {
                         thisPlayer.setPosition(playerPosition.x, playerPosition.y);
-                        remoteClients.get(playerIndex).position = playerPosition;
                     } catch (RemoteException ex) {
                         Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -251,7 +248,13 @@ public class ClientJPanel extends JPanel {
             }
             for (playerInfo remoteClient : remoteClients) {
                 g.setColor(Color.MAGENTA);
-                g.fillOval((int) (remoteClient.position.x - (remoteClient.mass / 2.0)), (int) (remoteClient.position.y - (remoteClient.mass / 2.0)), remoteClient.mass, remoteClient.mass);
+                Point p = null;
+                try {
+                    p = remoteClient.player.getPosition();
+                } catch (RemoteException ex) {
+                    Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                g.fillOval((int) (p.x - (remoteClient.mass / 2.0)), (int) (p.y - (remoteClient.mass / 2.0)), remoteClient.mass, remoteClient.mass);
             }
         }
     }
@@ -263,6 +266,7 @@ class playerInfo {
     public RemoteClientInterface player;
     public Point position;
     public int mass;
+    public String name;
 }
 
 class foodInfo {
