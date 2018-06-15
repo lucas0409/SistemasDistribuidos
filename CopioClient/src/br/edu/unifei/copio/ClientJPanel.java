@@ -1,15 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package br.edu.unifei.copio;
 
 import static br.edu.unifei.copio.Client.MAXSIZE;
 import static br.edu.unifei.copio.Client.PORT;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -40,24 +38,22 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
-/**
- *
- * @author lucas
- */
 public class ClientJPanel extends JPanel {
-
-    JTextField txt_playerName = new JTextField(10);
-    String playerName;
-    int playerIndex;
-    JButton btn_playGame = new JButton("Jogar!");
+    
     JFrame frame;
+    JTextField txt_playerName = new JTextField(10);
+    JTextField txt_DigiteAqui = new JTextField("Digite seu nome");
+    JButton btn_playGame = new JButton("Jogar!");
+    String playerName;
+    
+    int playerIndex;
     Socket socket;
     private Timer t;
     private RemoteClientInterface thisPlayer = null;
     private InetAddress broadcastAddress;
     private int size = 0;
     private Point playerPosition = new Point();
-    private int numJogadores;
+    private int playerNum;
     private boolean gameStarted;
     private String serverIP;
     int velocidade = 4;
@@ -65,7 +61,7 @@ public class ClientJPanel extends JPanel {
     private ArrayList<playerInfo> remoteClients = new ArrayList<playerInfo>();
 
     public void setNumJogadores(int numJogadores) {
-        this.numJogadores = numJogadores;
+        this.playerNum = playerNum;
     }
 
     protected void updatePlayerList() throws NotBoundException, RemoteException, MalformedURLException {
@@ -110,7 +106,21 @@ public class ClientJPanel extends JPanel {
     }
 
     public ClientJPanel() {
-        this.setBackground(Color.black);
+        this.setLayout(new GridLayout(3,1,0,30) );
+        this.setBackground(Color.WHITE); 
+        
+        txt_DigiteAqui.setHorizontalAlignment(JTextField.CENTER);
+        txt_DigiteAqui.setEditable(false);
+        txt_DigiteAqui.setBackground(Color.WHITE);
+        
+        txt_playerName.setToolTipText("Digite seu nome aqui!");
+        
+        btn_playGame.setBackground(Color.RED);
+        
+        this.add(txt_DigiteAqui);
+        this.add(txt_playerName);
+        this.add(btn_playGame);
+        
         size = 50;
         playerPosition.x = playerPosition.y = 0;
 
@@ -194,9 +204,6 @@ public class ClientJPanel extends JPanel {
             }
                     
         });
-
-        this.add(txt_playerName);
-        this.add(btn_playGame);
 
     }
 
