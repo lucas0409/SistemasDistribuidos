@@ -35,11 +35,11 @@ public class ServerIPBroadcastProtocol implements Runnable {
     @Override
     public void run() {
         try {
-            DatagramSocket dgSocket = new DatagramSocket(PORT); //Socket UDP para ler pacotes UDP na porta PORT
+            DatagramSocket dgSocket = new DatagramSocket(PORT+2); //Socket UDP para ler pacotes UDP na porta PORT
             dgSocket.setBroadcast(true);
             broadcastAddress = getBroadcastAddress();
             DatagramPacket dgReceivePacket = new DatagramPacket(new byte[MAXSIZE], MAXSIZE);
-            DatagramPacket dgSendPacket = new DatagramPacket(InetAddress.getLocalHost().getAddress(), InetAddress.getLocalHost().getAddress().length, broadcastAddress, PORT);
+            DatagramPacket dgSendPacket = new DatagramPacket(InetAddress.getLocalHost().getAddress(), InetAddress.getLocalHost().getAddress().length, broadcastAddress, PORT+2);
             for (;;) {
                 dgReceivePacket = new DatagramPacket(new byte[MAXSIZE], MAXSIZE);
                 dgSocket.receive(dgReceivePacket); //método que coloca o pacote que está no socket criado na porta PORT em dgPacket            
