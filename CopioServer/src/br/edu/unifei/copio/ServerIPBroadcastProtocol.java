@@ -43,7 +43,6 @@ public class ServerIPBroadcastProtocol implements Runnable {
             for (;;) {
                 dgReceivePacket = new DatagramPacket(new byte[MAXSIZE], MAXSIZE);
                 dgSocket.receive(dgReceivePacket); //método que coloca o pacote que está no socket criado na porta PORT em dgPacket            
-                System.out.println("Recebeu");
                 if((new String(dgReceivePacket.getData())).contains("-rqt-")){
                     dgSocket.close();
                     dgSocket = new DatagramSocket(PORT+2);

@@ -134,9 +134,7 @@ public class ClientJPanel extends JPanel {
                 } else {
                     playerName = "Convidado";
                 }
-                System.out.println("Kappa");
                 connect(playerName);
-                System.out.println("KappaPride");
                 foodInfo f;
                 for (int i = 0; i < 10; i++) {
                     try {
@@ -241,13 +239,11 @@ public class ClientJPanel extends JPanel {
             DatagramPacket dgReceivePacket = new DatagramPacket(new byte[MAXSIZE], MAXSIZE); //pacote UDP para receber a mensagem de broadcast do servidor
             dgSocket.setBroadcast(true);
             dgSocket.send(dgSendPacket);  //Cliente grita em broadcast por Datagrama com ip do servidor
-            System.out.println("enviou");
             dgSocket.close();
 
             dgSocket = new DatagramSocket(PORT+1);
             dgSocket.setBroadcast(true);
             dgSocket.receive(dgReceivePacket); //método que coloca o pacote que está no socket criado na porta PORT em dgReceivePacket
-            System.out.println("chegou");
             
             serverIP = dgReceivePacket.getAddress().toString().replace("/", "");
             System.out.println(serverIP);
