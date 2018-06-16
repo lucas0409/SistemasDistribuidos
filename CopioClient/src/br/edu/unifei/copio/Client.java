@@ -6,10 +6,14 @@
 package br.edu.unifei.copio;
 
 
+import java.awt.Color;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -21,10 +25,17 @@ public class Client {
     
     public static void main(String[] args) throws NotBoundException, MalformedURLException, RemoteException{
         JFrame frame = new JFrame("Cop.io");
-        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        frame.add(new ClientJPanel(frame));
-        frame.setSize( 300, 100 ); // set frame size
-        frame.setVisible( true ); // display frame
+        JPanel panel = new ClientJPanel(frame);
+        panel.setBounds(0, 200, 300, 170);
+        frame.setLayout(null);
+        frame.getContentPane().add(panel);
+        ImageIcon icon = new ImageIcon("src\\br\\edu\\unifei\\copio\\Logo.png");
+        JLabel label = new JLabel(icon);
+        label.setBounds(0, 0, 300, 200);
+        frame.getContentPane().add(label);
+        frame.setBounds(150,150, 300, 400 ); // set frame size
         frame.setResizable(false);
+        frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        frame.setVisible( true ); // display frame
     }    
 }

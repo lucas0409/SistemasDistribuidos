@@ -7,6 +7,7 @@ package br.edu.unifei.copio;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
@@ -15,7 +16,7 @@ import java.util.Random;
  *
  * @author Gianetti
  */
-public class RemoteClient extends UnicastRemoteObject implements RemoteClientInterface {
+public class RemoteClient extends UnicastRemoteObject implements RemoteClientInterface, Serializable {
 
     private Point position;
     private int mass;
@@ -29,11 +30,6 @@ public class RemoteClient extends UnicastRemoteObject implements RemoteClientInt
         position.y = rand.nextInt(600 - margin) + margin;
         color = new Color(rand.nextInt(255),rand.nextInt(255),rand.nextInt(255));
         mass = 30;
-    }
-
-    @Override
-    public void eatThis() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
