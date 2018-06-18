@@ -47,7 +47,7 @@ public class Servidor {
 
     public static void main(String[] args) throws IOException, RemoteException, NotBoundException {
         ServerSocket server = new ServerSocket(PORT); //cria o servidor na porta PORT definida anteriormente
-        Thread sendIP = new Thread(new ServerIPBroadcastProtocol(server)); //cria Thread que envia IP do servidor por broadcast
+        Thread sendIP = new Thread(new ServerIPBroadcastProtocol()); //cria Thread que envia IP do servidor por broadcast
         sendIP.start(); //inicia Thread de descoberta de servidor
 
         Registry foodRegistry = java.rmi.registry.LocateRegistry.createRegistry(1090);

@@ -32,20 +32,13 @@ public class ConnectionProtocol implements Runnable {
 
     @Override
     public void run() {
-        int recvMsgSize;  // Size of receive message
-        byte[] byteBuffer = new byte[1024];  // Receive buffer
-
-        System.out.println("Handling client at "
-                + s.getInetAddress().getHostAddress() + " on port "
-                + s.getPort());
-
+        System.out.println("Handling client at "+ s.getInetAddress().getHostAddress()+" on port "+s.getPort());
         try {
             BufferedReader entrada = new BufferedReader(new InputStreamReader(this.s.getInputStream()));
             PrintStream saida = new PrintStream(this.s.getOutputStream());
             Servidor.nomeCliente = entrada.readLine();
             Registry clientRegistry = java.rmi.registry.LocateRegistry.getRegistry(1091);
             clientRegistry.rebind(Servidor.nomeCliente, new RemoteClient());
-
             if (Servidor.Lista_Users(s, Servidor.nomeCliente)) {
                 saida.println("Não foi possível conectar! Nome ja existente");
                 Servidor.conexoes--;
@@ -59,11 +52,8 @@ public class ConnectionProtocol implements Runnable {
                     socket_out.println("-cnt-" + Servidor.conexoes);
                 }
             }
-
         } catch (IOException ex) {
             if (ex instanceof EOFException) {
-                System.out.println("User " + Servidor.nomeCliente + " disconnected!");
-            } else {
                 Logger.getLogger(ConnectionProtocol.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

@@ -17,12 +17,10 @@ import java.util.Random;
  * @author Gianetti
  */
 public class RemoteClient extends UnicastRemoteObject implements RemoteClientInterface, Serializable {
-
     private Point position;
     private int mass;
     private Color color;
     private final int margin = 10;
-
     public RemoteClient() throws RemoteException {
         Random rand = new Random();
         position = new Point();
@@ -31,31 +29,17 @@ public class RemoteClient extends UnicastRemoteObject implements RemoteClientInt
         color = new Color(rand.nextInt(255),rand.nextInt(255),rand.nextInt(255));
         mass = 30;
     }
-
     @Override
-    public int getMass() throws RemoteException {
-        return mass;
-    }
-
+    public int getMass() throws RemoteException { return mass; }
     @Override
-    public void setMass(int newMass) throws RemoteException {
-        mass = newMass;
-    }
-
+    public void setMass(int newMass) throws RemoteException { mass = newMass; }
     @Override
-    public Point getPosition() throws RemoteException {
-        return position;
-    }
-
+    public Point getPosition() throws RemoteException { return position; }
     @Override
     public void setPosition(int x, int y) throws RemoteException {
         position.x = x;
         position.y = y;
     }
-
     @Override
-    public Color getColor() throws RemoteException {
-        return color;
-    }
-
+    public Color getColor() throws RemoteException { return color; }
 }

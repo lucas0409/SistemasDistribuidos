@@ -234,30 +234,24 @@ public class ClientJPanel extends JPanel {
             String requestTest = "-rqt-";
             DatagramSocket dgSocket = new DatagramSocket(PORT+1);
             broadcastAddress = getBroadcastAddress();
-
-            DatagramPacket dgSendPacket = new DatagramPacket(requestTest.getBytes(), requestTest.getBytes().length, broadcastAddress, PORT+2);
-            DatagramPacket dgReceivePacket = new DatagramPacket(new byte[MAXSIZE], MAXSIZE); //pacote UDP para receber a mensagem de broadcast do servidor
+            DatagramPacket dgSendPacket = new DatagramPacket(requestTest.getBytes(), 
+                    requestTest.getBytes().length, broadcastAddress, PORT+2);
+            DatagramPacket dgReceivePacket = new DatagramPacket(new byte[MAXSIZE], MAXSIZE); 
             dgSocket.setBroadcast(true);
-            dgSocket.send(dgSendPacket);  //Cliente grita em broadcast por Datagrama com ip do servidor
+            dgSocket.send(dgSendPacket);
             dgSocket.close();
-
             dgSocket = new DatagramSocket(PORT+1);
             dgSocket.setBroadcast(true);
-            dgSocket.receive(dgReceivePacket); //método que coloca o pacote que está no socket criado na porta PORT em dgReceivePacket
-            
+            dgSocket.receive(dgReceivePacket); 
             serverIP = dgReceivePacket.getAddress().toString().replace("/", "");
             System.out.println(serverIP);
-            socket = new Socket(serverIP, PORT); //criação do socket para conexão com o servidor a partir da mensagem obtida
+            socket = new Socket(serverIP, PORT); 
             Thread MsgReceive = new Thread(new ClientCommunicationThread(socket, this));
             MsgReceive.start();
             System.out.println("Conectado em: " + dgReceivePacket.getAddress().toString().replace("/", ""));
-            dgSocket.close(); //fecha socket UDP*/
-
+            dgSocket.close();
             PrintStream writer = new PrintStream(socket.getOutputStream());
             writer.println(msg);
-
-        } catch (SocketException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -266,27 +260,26 @@ public class ClientJPanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        Point p = new Point();
         if (gameStarted) {
             for (int i = 0; i < remoteFoods.length; i++) {
                 try {
-                    Point p = remoteFoods[i].food.getPosition();
+                    p = remoteFoods[i].food.getPosition();
                     g.setColor(Color.RED);
-                    g.fillOval(p.x - remoteFoods[i].mass*2, p.y - remoteFoods[i].mass*2, remoteFoods[i].mass*4, remoteFoods[i].mass*4);
+                    g.fillOval(p.x - remoteFoods[i].mass*2, p.y - remoteFoods[i].mass*2, 
+                                remoteFoods[i].mass*4, remoteFoods[i].mass*4);
                 } catch (Exception e) {
                 }
             }
             for (playerInfo remoteClient : remoteClients) {
-                Point p = null;
                 int mass = 0;
-                Color c = null;
                 try {
-                    c = remoteClient.color;
                     p = remoteClient.player.getPosition();
                     mass = remoteClient.player.getMass();
                 } catch (RemoteException ex) {
                     Logger.getLogger(ClientJPanel.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                g.setColor(c);
+                g.setColor(remoteClient.color);
                 g.fillOval((int) (p.x - (mass / 2.0)), (int) (p.y - (mass / 2.0)), mass, mass);
             }
         }
