@@ -1,8 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
+//André Felipe Rocha        - 30897
+//Carla Grande de Freitas   - 30506
+//Lucas Alves de Oliveira   - 30303
+//Mateus Gianetti de Jesus  - 30870
+
 package br.edu.unifei.copio;
 
 import java.io.IOException;

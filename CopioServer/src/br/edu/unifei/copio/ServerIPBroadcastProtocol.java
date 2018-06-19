@@ -11,7 +11,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
-import java.net.ServerSocket;
 import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.logging.Level;

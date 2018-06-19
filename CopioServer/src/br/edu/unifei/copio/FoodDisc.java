@@ -5,9 +5,7 @@
  */
 package br.edu.unifei.copio;
 
-import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
