@@ -36,7 +36,7 @@ public class ConnectionProtocol implements Runnable {
             Servidor.nomeCliente = entrada.readLine();
             Registry clientRegistry = java.rmi.registry.LocateRegistry.getRegistry(1091);
             clientRegistry.rebind(Servidor.nomeCliente, new RemoteClient());
-            if (Servidor.Lista_Users(s, Servidor.nomeCliente)) {
+            if (!Servidor.addClient(s, Servidor.nomeCliente)) {
                 saida.println("Não foi possível conectar! Nome ja existente");
                 Servidor.conexoes--;
                 this.s.close();
