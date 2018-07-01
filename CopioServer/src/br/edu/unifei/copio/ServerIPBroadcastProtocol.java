@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.edu.unifei.copio;
 
 import java.io.IOException;
@@ -16,15 +11,11 @@ import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author lucas
- */
 public class ServerIPBroadcastProtocol implements Runnable {
-
-    public static final int MAXSIZE = 1024;
-    public static final int PORT = 7000;
-    private InetAddress broadcastAddress;
+    public static final int MAXSIZE = 1024; //tamanho máximo de uma mensagem em um packet
+    public static final int PORT_RECEIVE = 7002; //port do socket UDP do servidor
+    public static final int PORT_SEND = 7001; //port do socket UDP do cliente
+    private InetAddress broadcastAddress; //endereço de IP utilizado para enviar packets por broadcast
     
     public ServerIPBroadcastProtocol() {
     }
@@ -32,18 +23,17 @@ public class ServerIPBroadcastProtocol implements Runnable {
     @Override
     public void run() {
         try {
-            DatagramSocket dgSocket = new DatagramSocket(PORT+2);
+            DatagramSocket dgSocket = new DatagramSocket(PORT_RECEIVE);
             dgSocket.setBroadcast(true);
             broadcastAddress = getBroadcastAddress();
             DatagramPacket dgReceivePacket = new DatagramPacket(new byte[MAXSIZE], MAXSIZE);
             DatagramPacket dgSendPacket = new DatagramPacket(InetAddress.getLocalHost().getAddress(), 
-                    InetAddress.getLocalHost().getAddress().length, broadcastAddress, PORT+1);
+                    InetAddress.getLocalHost().getAddress().length, broadcastAddress, PORT_SEND);
             for (;;) {
-                dgReceivePacket = new DatagramPacket(new byte[MAXSIZE], MAXSIZE);
                 dgSocket.receive(dgReceivePacket);            
                 if((new String(dgReceivePacket.getData())).contains("-rqt-")){
                     dgSocket.close();
-                    dgSocket = new DatagramSocket(PORT+2);
+                    dgSocket = new DatagramSocket(PORT_RECEIVE);
                     dgSocket.setBroadcast(true);
                     dgSocket.send(dgSendPacket);
                 }
@@ -55,6 +45,7 @@ public class ServerIPBroadcastProtocol implements Runnable {
         }
     }
     
+    //<RESUMO> Retorna um IP de broadcast a partir da primeira interface encontrada
     public static InetAddress getBroadcastAddress() {
 	try {
 		Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();

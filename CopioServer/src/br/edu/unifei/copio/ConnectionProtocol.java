@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.edu.unifei.copio;
 
 import java.io.BufferedReader;
@@ -15,13 +10,8 @@ import java.rmi.registry.Registry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author lucas
- */
 public class ConnectionProtocol implements Runnable {
-
-    private Socket s;
+    private Socket s; //socket utilizado para trocar mensagens com o cliente
 
     public ConnectionProtocol(Socket s) {
         this.s = s;
