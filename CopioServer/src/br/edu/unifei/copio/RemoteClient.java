@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.edu.unifei.copio;
 
 import java.awt.Color;
@@ -12,15 +7,13 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Random;
 
-/**
- *
- * @author Gianetti
- */
 public class RemoteClient extends UnicastRemoteObject implements RemoteClientInterface, Serializable {
-    private Point position;
-    private int mass;
-    private Color color;
-    private final int margin = 10;
+    private Point position; //posição do cliente
+    private int mass; //massa do cliente
+    private Color color; //cor do cliente
+    private final int margin = 10; //margem utilizada não instanciar um cliente fora da tela
+    
+    //Inicialização dos atributos do cliente
     public RemoteClient() throws RemoteException {
         Random rand = new Random();
         position = new Point();
